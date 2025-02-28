@@ -58,8 +58,8 @@ export function AIInputWithSearch({
   const handleSubmit = () => {
     try {
       chatInputSchema.parse({ message: snap.inputValue.trim() })
+      chatActions.submitMessage(snap.inputValue)
       onSubmit?.(snap.inputValue, snap.searchMode)
-      chatActions.reset()
       adjustHeight(true)
     } catch (error) {
       // 处理校验错误
@@ -184,11 +184,12 @@ export function AIInputWithSearch({
               <button
                 type="button"
                 onClick={handleSubmit}
+                disabled={snap.isSendingDisabled}
                 className={cn(
                   "relative flex h-9 w-9 items-center justify-center rounded-full transition-colors",
-                  snap.inputValue
+                  snap.inputValue && !snap.isSendingDisabled
                     ? "bg-black text-white hover:opacity-70"
-                    : "bg-black/5 text-black"
+                    : "bg-black/5 text-black cursor-not-allowed"
                 )}
               >
                 <AnimatePresence mode="wait">

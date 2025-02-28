@@ -5,10 +5,24 @@ import { AIInputWithSearch } from "@/components/AiChat";
 import Social from "@/components/Social";
 import HomeLink from "@/components/HomeLink";
 import GuessAsking from "@/components/GuessAsking";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSnapshot } from 'valtio'
+import { chatState } from '@/store/chat'
+import ChatMessages from "@/components/ChatMessages";
+import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 export default function Home() {
   const { isSignedIn, isLoaded } = useUser();
+  const snap = useSnapshot(chatState)
+  const pathname = usePathname()
+  
+  useEffect(() => {
+    // 如果不在对话页面但有对话ID，更新URL
+    if (pathname === '/' && snap.conversationId) {
+      window.history.replaceState(null, '', `/${snap.conversationId}`)
+    }
+  }, [pathname, snap.conversationId])
 
   if (!isLoaded) {
     return null;
@@ -43,53 +57,80 @@ export default function Home() {
       </motion.div>
 
       <div className="flex flex-col justify-center items-center w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 relative">
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center text-gray-800 tracking-tight"
-          role="heading"
-        >
-          How can I help you?
-        </motion.h1>
+        <AnimatePresence>
+          {!snap.isInteraction && (
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center text-gray-800 tracking-tight"
+            >
+              How can I help you?
+            </motion.h1>
+          )}
+        </AnimatePresence>
 
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
           className="w-full max-w-2xl px-4"
+          animate={{
+            position: snap.isInteraction ? 'fixed' : 'relative',
+            bottom: snap.isInteraction ? '0' : 'auto',
+            left: snap.isInteraction ? '0' : 'auto',
+            right: snap.isInteraction ? '0' : 'auto',
+            maxWidth: snap.isInteraction ? '100%' : '2xl',
+            zIndex: snap.isInteraction ? 50 : 0,
+          }}
+          transition={{ duration: 0.4 }}
         >
           <AIInputWithSearch 
             onSubmit={(value, withSearch) => {
               console.log('Message:', value);
               console.log('Search enabled:', withSearch);
             }}
-            onFileSelect={(file) => {
-              console.log('Selected file:', file);
-            }}
           />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <GuessAsking />
-        </motion.div>
+        <AnimatePresence>
+          {!snap.isInteraction && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <GuessAsking />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {snap.isInteraction && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex-1 w-full overflow-y-auto"
+            >
+              <ChatMessages />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-        className="fixed bottom-4 left-0 right-0 flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 md:px-8 z-10 gap-4 sm:gap-0"
-        role="contentinfo"
-        aria-label="页面底部导航"
-      >
-        <Social />
-        <HomeLink />
-      </motion.div>
+      <AnimatePresence>
+        {!snap.isInteraction && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.5 }}
+            className="fixed bottom-4 left-0 right-0 flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 md:px-8 z-10 gap-4 sm:gap-0"
+          >
+            <Social />
+            <HomeLink />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

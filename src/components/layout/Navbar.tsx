@@ -19,7 +19,7 @@ import { ScanSearch } from "lucide-react";
  * Logo 组件
  */
 const Logo = memo(() => (
-  <Link href="/" className="flex items-center gap-2">
+  <Link href="/" className="flex items-center gap-2 cursor-pointer">
     <div className="flex items-center cursor-default text-black leading-none">
       <div className="flex items-center gap-2 font-playwrite text-base font-semibold">
       <ScanSearch />
