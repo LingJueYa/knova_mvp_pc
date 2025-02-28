@@ -2,30 +2,29 @@ import { proxy } from 'valtio'
 import { saveConversation, fetchConversation } from '@/lib/api'
 import type { Message } from '@/lib/api'
 
-// 定义 Dify 响应类型
+// 类型定义
 export interface DifyResponse {
   recommendations: string[]
 }
 
-// 定义聊天状态接口
 interface ChatState {
-  inputValue: string // 输入框内容
-  searchMode: boolean // 搜索模式
-  isComposing: boolean // 输入法组合状态
-  lastValidInput: string // 最后有效输入
-  isInteraction: boolean // 是否处于交互状态
-  messages: Message[] // 存储对话消息
-  conversationId: string | null // 对话ID
+  inputValue: string
+  searchMode: boolean
+  isComposing: boolean
+  lastValidInput: string
+  isInteraction: boolean
+  messages: Message[]
+  conversationId: string | null
   isLoading: boolean
   isSendingDisabled: boolean
   difyResponse: DifyResponse | null
   selectedQuestion: string | null
 }
 
-// 用于本地存储的key
+// 常量定义
 const STORAGE_KEY = 'chat_state'
 
-// 聊天状态存储
+// 状态初始化
 export const chatState = proxy<ChatState>({
   inputValue: '',
   searchMode: true,
@@ -40,43 +39,38 @@ export const chatState = proxy<ChatState>({
   selectedQuestion: null,
 })
 
-// 聊天相关操作
+// 聊天操作集合
 export const chatActions = {
-  // 设置输入值
+  // 基础状态操作
   setInputValue(value: string) {
     chatState.inputValue = value
     chatState.lastValidInput = value
   },
   
-  // 设置输入法组合状态
   setCompositionState(isComposing: boolean) {
     chatState.isComposing = isComposing
   },
 
-  // 更新最后有效输入
   updateLastValidInput(value: string) {
     chatState.lastValidInput = value
   },
 
-  // 设置搜索模式
   setSearchMode(enabled: boolean) {
     chatState.searchMode = enabled
   },
 
-  // 设置交互状态
   setIsInteraction(enabled: boolean) {
     chatState.isInteraction = enabled
   },
 
-  // 初始化新对话
+  // 会话管理
   initializeConversation() {
     const newId = crypto.randomUUID()
     chatState.conversationId = newId
-    // 使用 replaceState 来无感更新 URL
     window.history.replaceState(null, '', `/${newId}`)
   },
 
-  // 保存状态到本地存储
+  // 本地存储操作
   saveToLocalStorage() {
     const state = {
       messages: chatState.messages,
@@ -86,18 +80,21 @@ export const chatActions = {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   },
 
-  // 从本地存储恢复状态
   loadFromLocalStorage() {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       const state = JSON.parse(stored)
+      if (window.location.pathname !== '/') {
+        chatState.conversationId = state.conversationId
+      } else {
+        chatState.conversationId = null
+      }
       chatState.messages = state.messages
-      chatState.conversationId = state.conversationId
       chatState.isInteraction = state.isInteraction
     }
   },
 
-  // 提交消息
+  // 消息处理
   async submitMessage(content: string) {
     if (!chatState.conversationId) {
       this.initializeConversation()
@@ -105,7 +102,6 @@ export const chatActions = {
     
     chatState.isSendingDisabled = true
     
-    // 创建并立即添加用户消息
     const userMessage: Message = {
       id: crypto.randomUUID(),
       type: 'user',
@@ -133,14 +129,11 @@ export const chatActions = {
         
         const data = await response.json()
         console.log('Received recommendations:', data)
-        
-        // 只保存推荐问题到状态，不创建系统消息
         chatState.difyResponse = data
       }
     } catch (error) {
       console.error('Error getting recommendations:', error)
       
-      // 添加错误消息
       const errorMessage: Message = {
         id: crypto.randomUUID(),
         type: 'assistant',
@@ -153,7 +146,6 @@ export const chatActions = {
       chatState.isSendingDisabled = false
     }
 
-    // 保存对话
     if (chatState.conversationId) {
       try {
         await saveConversation(chatState.conversationId, chatState.messages)
@@ -163,21 +155,19 @@ export const chatActions = {
     }
   },
 
-  // 选择推荐问题
+  // 推荐问题处理
   selectRecommendation(content: string) {
     if (content && !chatState.isSendingDisabled) {
-      chatState.selectedQuestion = content // 只保存选中的问题，不立即提交
+      chatState.selectedQuestion = content
     }
   },
 
-  // 细化当前选中的问题
   async refineQuestion() {
     if (chatState.selectedQuestion) {
       chatState.isLoading = true
       chatState.isSendingDisabled = true
       
       try {
-        // 先提交当前选中的问题
         await this.submitMessage(chatState.selectedQuestion)
         
         const response = await fetch('/api/recommended-question', {
@@ -204,7 +194,6 @@ export const chatActions = {
     }
   },
 
-  // 开始新的提问
   startNewQuestion() {
     if (chatState.selectedQuestion) {
       chatState.isLoading = true
@@ -212,7 +201,7 @@ export const chatActions = {
     }
   },
 
-  // 添加助手回复
+  // 消息管理
   addAssistantMessage(content: string) {
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
@@ -223,32 +212,29 @@ export const chatActions = {
     chatState.messages.push(assistantMessage)
   },
 
-  // 重置所有状态
+  // 状态重置
   reset() {
     chatState.inputValue = ''
     chatState.searchMode = true
     chatState.isComposing = false
     chatState.lastValidInput = ''
     chatState.isInteraction = false
-    chatState.messages = [] // 清空消息
+    chatState.messages = []
   },
 
-  // 加载对话
+  // 会话加载
   async loadConversation(id: string) {
     chatState.conversationId = id
     chatState.isInteraction = true
 
     try {
-      // 先尝试从本地存储加载
       this.loadFromLocalStorage()
       
-      // 如果本地存储的conversationId与当前不匹配，则从服务器获取
       if (chatState.conversationId !== id) {
         const data = await fetchConversation(id)
         chatState.messages = data.messages
         chatState.isInteraction = true
         chatState.conversationId = id
-        // 更新本地存储
         this.saveToLocalStorage()
       }
     } catch (error) {

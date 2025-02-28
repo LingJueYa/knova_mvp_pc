@@ -1,7 +1,7 @@
-import { queryExamples } from "@/data/queryExamples";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { chatActions } from '@/store/chat';
+import { queryExamples } from "@/data/queryExamples";
 
 export default function GuessAsking() {
   return (

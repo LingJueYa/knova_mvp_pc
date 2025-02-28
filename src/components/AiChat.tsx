@@ -1,29 +1,30 @@
 "use client";
 
-import { Compass, ArrowUp, Pencil } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
+import React from 'react'
+import { useSnapshot } from 'valtio'
+import { motion, AnimatePresence } from "framer-motion"
+import { Compass, ArrowUp, Pencil } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
+import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useSnapshot } from 'valtio'
 import { chatState, chatActions } from '@/store/chat'
 import { chatInputSchema } from '@/schemas/chat'
-import React from 'react'
 
+// 组件属性类型定义
 interface AIInputWithSearchProps {
-  id?: string;
-  placeholder?: string;
-  minHeight?: number;
-  maxHeight?: number;
-  onSubmit?: (value: string, withSearch: boolean) => void;
-  onFileSelect?: (file: File) => void;
-  className?: string;
+  id?: string
+  placeholder?: string
+  minHeight?: number
+  maxHeight?: number
+  onSubmit?: (value: string, withSearch: boolean) => void
+  onFileSelect?: (file: File) => void
+  className?: string
 }
 
 export function AIInputWithSearch({
@@ -34,18 +35,20 @@ export function AIInputWithSearch({
   onSubmit,
   className
 }: AIInputWithSearchProps) {
+  // 状态和钩子初始化
   const snap = useSnapshot(chatState)
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
     minHeight,
     maxHeight,
-  });
+  })
   const [localValue, setLocalValue] = React.useState("")
 
-  // 使用 useEffect 来同步外部状态到本地状态
+  // 同步外部状态到本地状态
   React.useEffect(() => {
     setLocalValue(snap.inputValue)
   }, [snap.inputValue])
 
+  // 输入处理函数
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     setLocalValue(value)
@@ -55,6 +58,7 @@ export function AIInputWithSearch({
     adjustHeight()
   }
 
+  // 提交处理函数
   const handleSubmit = () => {
     try {
       chatInputSchema.parse({ message: snap.inputValue.trim() })
@@ -62,7 +66,6 @@ export function AIInputWithSearch({
       onSubmit?.(snap.inputValue, snap.searchMode)
       adjustHeight(true)
     } catch (error) {
-      // 处理校验错误
       console.error(error)
     }
   }
@@ -70,11 +73,13 @@ export function AIInputWithSearch({
   return (
     <div className={cn("w-full py-4", className)}>
       <div className="relative max-w-[800px] w-full mx-auto">
+        {/* 输入框容器 */}
         <div className="flex w-full cursor-text flex-col rounded-[24px] border border-token-border-light px-3 py-2 
           shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),_0_2px_5px_0px_rgba(0,0,0,0.06)]
           has-[:focus]:shadow-[0_2px_12px_0px_rgba(0,0,0,0.04),_0_9px_9px_0px_rgba(0,0,0,0.01),_0_2px_5px_0px_rgba(0,0,0,0.06)]
-          transition-all duration-150 ease-in-out bg-white"
-        >
+          transition-all duration-150 ease-in-out bg-white">
+          
+          {/* 文本输入区域 */}
           <div className="flex flex-col justify-start">
             <div className="flex min-h-[46px] items-start pl-1">
               <div className="min-w-0 max-w-full flex-1">
@@ -95,9 +100,7 @@ export function AIInputWithSearch({
                     transform: snap.isComposing ? 'scale(1.001)' : 'scale(1)',
                   }}
                   ref={textareaRef}
-                  onCompositionStart={() => {
-                    chatActions.setCompositionState(true)
-                  }}
+                  onCompositionStart={() => chatActions.setCompositionState(true)}
                   onCompositionEnd={(e: React.CompositionEvent<HTMLTextAreaElement>) => {
                     chatActions.setCompositionState(false)
                     const value = e.currentTarget.value
@@ -110,76 +113,80 @@ export function AIInputWithSearch({
             </div>
           </div>
 
+          {/* 底部工具栏 */}
           <div className="mb-1 mt-2 flex items-center justify-between sm:mt-5">
+            {/* 搜索模式切换按钮 */}
             <div className="flex gap-x-1.5">
-            <TooltipProvider delayDuration={200}>
-            <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => chatActions.setSearchMode(!snap.searchMode)}
-                className={cn(
-                  "flex h-9 min-w-8 items-center justify-center rounded-full border p-2 text-[13px] gap-2 transition-colors",
-                  snap.searchMode
-                    ? "bg-[#EBF3FC] border-0"
-                    : "border-token-border-light hover:bg-token-main-surface-secondary text-black/60"
-                )}
-              >
-                <div className="w-[18px] h-[18px] flex items-center justify-center flex-shrink-0">
-                  <motion.div
-                    animate={{
-                      rotate: snap.searchMode ? 180 : 0,
-                      scale: snap.searchMode ? 1.1 : 1,
-                      translateY: 0,
-                      translateX: 0
-                    }}
-                    whileHover={{
-                      rotate: snap.searchMode ? 180 : 15,
-                      scale: 1.1,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 10,
-                      },
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 25,
-                    }}
-                  >
-                    <Compass
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => chatActions.setSearchMode(!snap.searchMode)}
                       className={cn(
-                        "h-[18px] w-[18px]",
-                        snap.searchMode ? "text-[#3A83F7]" : "text-inherit"
+                        "flex h-9 min-w-8 items-center justify-center rounded-full border p-2 text-[13px] gap-2 transition-colors",
+                        snap.searchMode
+                          ? "bg-[#EBF3FC] border-0"
+                          : "border-token-border-light hover:bg-token-main-surface-secondary text-black/60"
                       )}
-                    />
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {snap.searchMode && (
-                    <motion.span
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{
-                        width: "auto",
-                        opacity: 1,
-                      }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-sm overflow-hidden whitespace-nowrap text-[#3A83F7] flex-shrink-0"
                     >
-                      Guided Mode
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-              </TooltipTrigger>
+                      {/* 指南针图标动画 */}
+                      <div className="w-[18px] h-[18px] flex items-center justify-center flex-shrink-0">
+                        <motion.div
+                          animate={{
+                            rotate: snap.searchMode ? 180 : 0,
+                            scale: snap.searchMode ? 1.1 : 1,
+                            translateY: 0,
+                            translateX: 0
+                          }}
+                          whileHover={{
+                            rotate: snap.searchMode ? 180 : 15,
+                            scale: 1.1,
+                            transition: {
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 10,
+                            },
+                          }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 25,
+                          }}
+                        >
+                          <Compass
+                            className={cn(
+                              "h-[18px] w-[18px]",
+                              snap.searchMode ? "text-[#3A83F7]" : "text-inherit"
+                            )}
+                          />
+                        </motion.div>
+                      </div>
+                      
+                      {/* 引导模式文本动画 */}
+                      <AnimatePresence>
+                        {snap.searchMode && (
+                          <motion.span
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: "auto", opacity: 1 }}
+                            exit={{ width: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-sm overflow-hidden whitespace-nowrap text-[#3A83F7] flex-shrink-0"
+                          >
+                            Guided Mode
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </button>
+                  </TooltipTrigger>
                   <TooltipContent>
                     <p>Help you ask questions quickly with a choice</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
+
+            {/* 发送按钮 */}
             <div className="flex gap-x-1.5">
               <button
                 type="button"
@@ -221,6 +228,7 @@ export function AIInputWithSearch({
         </div>
       </div>
 
+      {/* 输入法组合状态指示器 */}
       <motion.div
         className="absolute bottom-0 left-0 h-0.5 bg-blue-500"
         initial={false}
@@ -235,5 +243,5 @@ export function AIInputWithSearch({
         }}
       />
     </div>
-  );
+  )
 }

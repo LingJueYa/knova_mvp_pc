@@ -64,44 +64,24 @@ export default function ChatMessages() {
               ✨
             </motion.div>
             <div className="flex-1 max-w-[280px] space-y-3">
-              <motion.div 
-                className="h-[18px] bg-gradient-to-r from-gray-200 to-gray-100 rounded-full"
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [0.98, 1, 0.98]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              <motion.div 
-                className="h-[18px] bg-gradient-to-r from-gray-200 to-gray-100 rounded-full w-4/5"
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [0.98, 1, 0.98]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.15
-                }}
-              />
-              <motion.div 
-                className="h-[18px] bg-gradient-to-r from-gray-200 to-gray-100 rounded-full w-2/3"
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [0.98, 1, 0.98]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.3
-                }}
-              />
+              {[0, 0.15, 0.3].map((delay, index) => (
+                <motion.div 
+                  key={index}
+                  className={`h-[18px] bg-gradient-to-r from-gray-200 to-gray-100 rounded-full ${
+                    index === 1 ? 'w-4/5' : index === 2 ? 'w-2/3' : 'w-full'
+                  }`}
+                  animate={{
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [0.98, 1, 0.98]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay
+                  }}
+                />
+              ))}
             </div>
           </motion.div>
         )}

@@ -7,7 +7,7 @@ import HomeLink from "@/components/HomeLink";
 import GuessAsking from "@/components/GuessAsking";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from 'valtio'
-import { chatState } from '@/store/chat'
+import { chatState, chatActions } from '@/store/chat'
 import ChatMessages from "@/components/ChatMessages";
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
@@ -18,11 +18,23 @@ export default function Home() {
   const pathname = usePathname()
   
   useEffect(() => {
-    // 如果不在对话页面但有对话ID，更新URL
-    if (pathname === '/' && snap.conversationId) {
+    // 只在非首页路径下更新 URL
+    if (pathname !== '/' && snap.conversationId) {
       window.history.replaceState(null, '', `/${snap.conversationId}`)
     }
   }, [pathname, snap.conversationId])
+
+  useEffect(() => {
+    // 只在非首页路径下加载本地存储的对话
+    if (pathname !== '/' && !snap.isInteraction) {
+      chatActions.loadFromLocalStorage()
+    }
+    
+    // 组件卸载时保存状态
+    return () => {
+      chatActions.saveToLocalStorage()
+    }
+  }, [snap.isInteraction, pathname])
 
   if (!isLoaded) {
     return null;
