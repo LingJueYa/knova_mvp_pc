@@ -19,61 +19,61 @@ export default function Error({
   const getErrorContent = () => {
     if (error.message.includes("网络") || error.message.includes("信号")) {
       return {
-        title: "🌐 与星界的连接暂时中断",
-        description: "别担心，休息一下，让能量重新汇聚。很多时候，命运的答案就在片刻等待之后。",
+        title: "🔌 AI 连接暂时中断",
+        description: "看起来网络出现了一些波动。别担心，让我们稍作休息，很快就能重新建立连接。",
       };
     }
     if (error.message.includes("等待") || error.message.includes("稍后")) {
       return {
-        title: "⏳ 星界信息正在传递",
-        description: "塔罗牌的智慧需要时间沉淀，让我们耐心等待，好的答案值得等待。",
+        title: "⚡ AI 正在处理中",
+        description: "AI 正在进行复杂的运算，请稍候片刻。优质的答案需要一点时间来完善。",
       };
     }
-    if (error.message.includes("塔罗师")) {
+    if (error.message.includes("AI") || error.message.includes("模型")) {
       return {
-        title: "✨ 塔罗师在调整能量",
-        description: "每个答案都需要专注的解读，让我们给塔罗师一点时间，很快就能为您揭示答案。",
+        title: "🤖 AI 模型正在调整",
+        description: "AI 模型需要一点时间来优化响应。我们将尽快为您提供所需的帮助。",
       };
     }
     return {
-      title: "🎋 遇见了一点小意外",
-      description: "命运之轮在转动，有时需要停下来调整方向。让我们深呼吸，重新开始这段奇妙的旅程。",
+      title: "💫 遇到了一些小问题",
+      description: "系统需要一点时间来调整。让我们稍作等待，很快就能继续我们的对话。",
     };
   };
 
   const content = getErrorContent();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-5 sm:px-8 md:px-12 lg:px-16 max-w-screen-2xl mx-auto bg-gradient-to-b from-white via-gray-50/50 to-white">
-      <div className="w-full max-w-3xl mx-auto text-center space-y-6 md:space-y-8 lg:space-y-10">
+    <div className="flex flex-col items-center justify-center min-h-screen px-5 sm:px-8 md:px-12 lg:px-16 max-w-screen-2xl mx-auto bg-gradient-to-b from-slate-50 via-white to-slate-50">
+      <div className="w-full max-w-3xl mx-auto text-center space-y-8">
         <h1
-          className="text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3rem] font-normal tracking-tight text-gray-800 leading-tight"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 leading-tight"
           aria-label={content.title}
         >
           {content.title}
         </h1>
 
         <p
-          className="text-base sm:text-lg md:text-xl text-gray-500 max-w-[540px] mx-auto leading-relaxed font-light"
+          className="text-base sm:text-lg md:text-xl text-slate-600 max-w-[600px] mx-auto leading-relaxed"
           aria-label={content.description}
         >
           {content.description}
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 md:pt-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center min-w-[140px] px-7 py-3.5 text-base font-normal text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
-            aria-label="重新尝试"
+            className="inline-flex items-center justify-center min-w-[160px] px-8 py-4 text-base font-medium text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2"
+            aria-label="重试"
           >
-            重新尝试
+            重试
           </button>
           <Link
             href="/"
-            className="inline-flex items-center justify-center min-w-[140px] px-7 py-3.5 text-base font-normal text-white bg-primary rounded-lg hover:bg-primary/95 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
-            aria-label="返回首页"
+            className="inline-flex items-center justify-center min-w-[160px] px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            aria-label="返回主页"
           >
-            返回首页
+            返回主页
           </Link>
         </div>
       </div>

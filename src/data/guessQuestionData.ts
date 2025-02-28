@@ -1,4 +1,9 @@
-export const queryExamples = [
+export interface GuessQuestion {
+  id: string;
+  text: string;
+}
+
+export const guessQuestionData: GuessQuestion[] = [
   {
     id: 'quantum',
     text: 'Explain quantum entanglement simply'

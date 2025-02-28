@@ -18,22 +18,16 @@ export default function Home() {
   const pathname = usePathname()
   
   useEffect(() => {
-    // 只在非首页路径下更新 URL
     if (pathname !== '/' && snap.conversationId) {
       window.history.replaceState(null, '', `/${snap.conversationId}`)
     }
   }, [pathname, snap.conversationId])
 
   useEffect(() => {
-    // 只在非首页路径下加载本地存储的对话
     if (pathname !== '/' && !snap.isInteraction) {
       chatActions.loadFromLocalStorage()
     }
-    
-    // 组件卸载时保存状态
-    return () => {
-      chatActions.saveToLocalStorage()
-    }
+    return () => chatActions.saveToLocalStorage()
   }, [snap.isInteraction, pathname])
 
   if (!isLoaded) {
@@ -42,8 +36,15 @@ export default function Home() {
 
   if (!isSignedIn) {
     return (
-      <main className="flex min-h-[100svh] items-center justify-center p-4" role="main">
-        <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium text-gray-600/90 animate-fade-in">
+      <main 
+        className="flex min-h-[100svh] items-center justify-center p-4" 
+        role="main"
+        aria-label="登录提示页面"
+      >
+        <div 
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium text-gray-600/90 animate-fade-in"
+          aria-live="polite"
+        >
           请先登录
         </div>
       </main>
@@ -54,14 +55,14 @@ export default function Home() {
     <main 
       className="flex min-h-[100svh] overflow-hidden relative"
       role="main"
-      aria-label="主页面内容区域"
+      aria-label="AI 对话助手主页面"
     >
-      {/* 背景动画 */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         className="absolute inset-0"
+        aria-hidden="true"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-50/30" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#fff2dd_0%,_transparent_70%)] opacity-60 animate-pulse-slow" />
@@ -77,6 +78,7 @@ export default function Home() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
               className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center text-gray-800 tracking-tight"
+              aria-label="欢迎提示语"
             >
               How can I help you?
             </motion.h1>
@@ -94,6 +96,7 @@ export default function Home() {
             zIndex: snap.isInteraction ? 50 : 0,
           }}
           transition={{ duration: 0.4 }}
+          aria-label="消息输入区域"
         >
           <AIInputWithSearch 
             onSubmit={(value, withSearch) => {
@@ -110,6 +113,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.5 }}
+              aria-label="常见问题推荐"
             >
               <GuessAsking />
             </motion.div>
@@ -122,6 +126,8 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex-1 w-full overflow-y-auto"
+              role="log"
+              aria-label="对话内容"
             >
               <ChatMessages />
             </motion.div>
@@ -131,16 +137,17 @@ export default function Home() {
 
       <AnimatePresence>
         {!snap.isInteraction && (
-          <motion.div 
+          <motion.nav 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
             className="fixed bottom-4 left-0 right-0 flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 md:px-8 z-10 gap-4 sm:gap-0"
+            aria-label="页面底部导航"
           >
             <Social />
             <HomeLink />
-          </motion.div>
+          </motion.nav>
         )}
       </AnimatePresence>
     </main>

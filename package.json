@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -26,7 +26,6 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.4.7",
-    "justd-icons": "^1.10.25",
     "lodash": "^4.17.21",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",

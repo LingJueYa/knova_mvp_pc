@@ -1,64 +1,86 @@
 import { proxy } from 'valtio'
-import { saveConversation, fetchConversation } from '@/lib/api'
-import type { Message } from '@/lib/api'
+import { conversationActions } from '@/actions/conversation'
+import type { Message } from '@/actions/conversation'
 
-// 类型定义
+// 接口定义
 export interface DifyResponse {
   recommendations: string[]
 }
 
 interface ChatState {
-  inputValue: string
-  searchMode: boolean
-  isComposing: boolean
-  lastValidInput: string
+  // 输入相关状态
+  inputValue: string // 输入框内容
+  lastValidInput: string // 上次有效输入
+  isComposing: boolean // 是否正在输入
+  
+  // 模式控制
+  guidedMode: boolean
   isInteraction: boolean
+  
+  // 会话相关状态
   messages: Message[]
   conversationId: string | null
+  
+  // UI 状态
   isLoading: boolean
   isSendingDisabled: boolean
+  
+  // Dify 相关状态
   difyResponse: DifyResponse | null
   selectedQuestion: string | null
 }
 
-// 常量定义
+// 存储键常量
 const STORAGE_KEY = 'chat_state'
 
-// 状态初始化
+// 初始状态
 export const chatState = proxy<ChatState>({
-  inputValue: '',
-  searchMode: true,
-  isComposing: false,
-  lastValidInput: '',
-  isInteraction: false,
-  messages: [],
-  conversationId: null,
-  isLoading: false,
-  isSendingDisabled: false,
-  difyResponse: null,
-  selectedQuestion: null,
+  // 输入相关
+  inputValue: '', // 输入框内容
+  lastValidInput: '', // 上次有效输入
+  isComposing: false, // 是否正在输入
+  
+  // 模式控制
+  guidedMode: true, // 引导模式
+  isInteraction: false, // 是否交互
+  
+  // 会话相关
+  messages: [], // 消息列表
+  conversationId: null, // 会话ID
+  
+  // UI 状态
+  isLoading: false, // 是否加载中
+  isSendingDisabled: false, // 是否发送禁用
+  
+  // Dify 相关
+  difyResponse: null, // Dify响应
+  selectedQuestion: null, // 选中的问题
 })
 
 // 聊天操作集合
 export const chatActions = {
-  // 基础状态操作
+  // 设置输入框内容
   setInputValue(value: string) {
     chatState.inputValue = value
     chatState.lastValidInput = value
   },
   
+  // 设置是否正在输入
   setCompositionState(isComposing: boolean) {
     chatState.isComposing = isComposing
   },
 
+  // 更新上次有效输入
   updateLastValidInput(value: string) {
     chatState.lastValidInput = value
   },
 
-  setSearchMode(enabled: boolean) {
-    chatState.searchMode = enabled
+  // 设置引导模式
+  setguidedMode(enabled: boolean) {
+    chatState.guidedMode = enabled
   },
 
+  // 设置是否交互
   setIsInteraction(enabled: boolean) {
     chatState.isInteraction = enabled
   },
@@ -80,6 +102,7 @@ export const chatActions = {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   },
 
+  // 从本地存储加载
   loadFromLocalStorage() {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
@@ -115,7 +138,7 @@ export const chatActions = {
     chatState.lastValidInput = ''
 
     try {
-      if (chatState.searchMode) {
+      if (chatState.guidedMode) {
         chatState.isLoading = true
         const response = await fetch('/api/recommended-question', {
           method: 'POST',
@@ -148,7 +171,7 @@ export const chatActions = {
 
     if (chatState.conversationId) {
       try {
-        await saveConversation(chatState.conversationId, chatState.messages)
+        await conversationActions.saveConversation(chatState.conversationId, chatState.messages)
       } catch (error) {
         console.error('Failed to save conversation:', error)
       }
@@ -215,7 +238,7 @@ export const chatActions = {
   // 状态重置
   reset() {
     chatState.inputValue = ''
-    chatState.searchMode = true
+    chatState.guidedMode = true
     chatState.isComposing = false
     chatState.lastValidInput = ''
     chatState.isInteraction = false
@@ -231,7 +254,7 @@ export const chatActions = {
       this.loadFromLocalStorage()
       
       if (chatState.conversationId !== id) {
-        const data = await fetchConversation(id)
+        const data = await conversationActions.fetchConversation(id)
         chatState.messages = data.messages
         chatState.isInteraction = true
         chatState.conversationId = id

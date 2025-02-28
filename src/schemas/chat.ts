@@ -1,3 +1,5 @@
+// 输入框内容校验
+
 import { z } from 'zod'
 
 export const chatInputSchema = z.object({

@@ -4,26 +4,40 @@
 
 /* 基础样式层 */
 @layer base {
+  /* 亮色模式变量 */
   :root {
-    /* 定义颜色变量 */
+    /* 主题色 */
     --light: 223.81 0% 98%;
     --dark: 239.95 9% 6%;
     --bg: 0 0% 100%;
     --fg: 239.93 9% 4%;
+    
+    /* 主要颜色 */
     --primary: 24 9.8% 10%;
     --primary-fg: 0 0% 100%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --primary-chart: 216.74 100% 45%;
+    
+    /* 次要颜色 */
     --secondary: 60 4.8% 95.9%;
     --secondary-fg: 240.01 6% 10%;
+    --secondary-foreground: 24 9.8% 10%;
+    --secondary-chart: 219.83 100% 77%;
+    
+    /* 第三级颜色 */
     --tertiary: 0 0% 100%;
     --tertiary-fg: 240 4% 16%;
-    --overlay: 0 0% 100%;
-    --overlay-fg: 239.93 9% 4%;
-    --muted: 60 4.8% 95.9%;
-    --muted-fg: 240 4% 41%;
+    --tertiary-chart: 216.01 92% 60%;
+    
+    /* 强调色 */
     --accent: 60 4.8% 95.9%;
     --accent-fg: 0 0% 100%;
+    --accent-foreground: 24 9.8% 10%;
     --accent-subtle: 216.92 99% 97%;
     --accent-subtle-fg: 216.74 100% 40%;
+    --accent-chart: 210 98% 78%;
+    
+    /* 状态颜色 */
     --success: 161.17 91% 31%;
     --success-fg: 151.77 82% 96%;
     --info: 205.77 100% 50%;
@@ -32,28 +46,32 @@
     --danger-fg: 360 86% 97%;
     --warning: 43.2 96% 56.99%;
     --warning-fg: 20.91 91% 14.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    
+    /* 界面元素 */
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
     --ring: 20 14.3% 4.1%;
     --toggle: 240.01 5% 84%;
     --radius: 0.5rem;
-    --primary-chart: 216.74 100% 45%;
-    --secondary-chart: 219.83 100% 77%;
-    --tertiary-chart: 216.01 92% 60%;
-    --highlight-chart: 210 98% 78%;
-    --accent-chart: 210 98% 78%;
+    --muted: 60 4.8% 95.9%;
+    --muted-fg: 240 4% 41%;
+    --muted-foreground: 25 5.3% 44.7%;
+    
+    /* 背景和前景 */
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
+    --overlay: 0 0% 100%;
+    --overlay-fg: 239.93 9% 4%;
+    
+    /* 卡片和弹出框 */
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 20 14.3% 4.1%;
-    --primary-foreground: 60 9.1% 97.8%;
-    --secondary-foreground: 24 9.8% 10%;
-    --muted-foreground: 25 5.3% 44.7%;
-    --accent-foreground: 24 9.8% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    
+    /* 图表颜色 */
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -61,121 +79,119 @@
     --chart-5: 27 87% 67%;
   }
 
-  /* 深色模式下的变量 */
+  /* 深色模式变量 */
   .dark {
+    /* 主题色 */
     --bg: 0 0% 0%;
     --fg: 223.81 0% 98%;
+    
+    /* 主要颜色 */
     --primary: 60 9.1% 97.8%;
     --primary-fg: 0 0% 100%;
+    --primary-foreground: 24 9.8% 10%;
+    --primary-chart: 221.19 83% 53%;
+    
+    /* 次要颜色 */
     --secondary: 12 6.5% 15.1%;
     --secondary-fg: 223.81 0% 98%;
+    --secondary-foreground: 60 9.1% 97.8%;
+    --secondary-chart: 211.99 95% 68%;
+    
+    /* 第三级颜色 */
     --tertiary: 240.02 10% 6%;
     --tertiary-fg: 239.99 4% 96%;
+    --tertiary-chart: 216.01 92% 60%;
+    
+    /* 强调色 */
     --accent: 12 6.5% 15.1%;
     --accent-fg: 0 0% 100%;
+    --accent-foreground: 60 9.1% 97.8%;
     --accent-subtle: 215.99 94% 6%;
     --accent-subtle-fg: 204.92 100% 77%;
-    --overlay: 240.03 6% 6%;
-    --overlay-fg: 223.81 0% 98%;
-    --muted: 12 6.5% 15.1%;
-    --muted-fg: 240 5.03% 64.9%;
-    --info: 205.77 100% 50%;
-    --info-fg: 0 0% 100%;
+    --accent-chart: 212 96% 87%;
+    
+    /* 状态颜色 */
     --success: 161.17 91% 31%;
     --success-fg: 151.77 82% 96%;
-    --ring: 24 5.7% 82.9%;
-    --toggle: 239.99 5% 26%;
+    --info: 205.77 100% 50%;
+    --info-fg: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    
+    /* 界面元素 */
     --border: 12 6.5% 15.1%;
     --input: 12 6.5% 15.1%;
-    --primary-chart: 221.19 83% 53%;
-    --secondary-chart: 211.99 95% 68%;
-    --tertiary-chart: 216.01 92% 60%;
-    --highlight-chart: 210 98% 78%;
-    --accent-chart: 212 96% 87%;
+    --ring: 24 5.7% 82.9%;
+    --toggle: 239.99 5% 26%;
+    --muted: 12 6.5% 15.1%;
+    --muted-fg: 240 5.03% 64.9%;
+    --muted-foreground: 24 5.4% 63.9%;
+    
+    /* 背景和前景 */
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
+    --overlay: 240.03 6% 6%;
+    --overlay-fg: 223.81 0% 98%;
+    
+    /* 卡片和弹出框 */
     --card: 20 14.3% 4.1%;
     --card-foreground: 60 9.1% 97.8%;
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;
-    --primary-foreground: 24 9.8% 10%;
-    --secondary-foreground: 60 9.1% 97.8%;
-    --muted-foreground: 24 5.4% 63.9%;
-    --accent-foreground: 60 9.1% 97.8%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    
+    /* 图表颜色 */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-/* 全局样式 */
-@layer base {
+  /* HTML 基础样式 */
   html {
-    @apply scroll-smooth 
+    @apply scroll-smooth;
   }
 
+  /* 全局样式 */
   * {
-    @apply border-border; /* 边框样式 */
-    font-feature-settings: "cv11", "ss01"; /* 字体特性设置 */
-    font-variation-settings: "opsz" 850; /* 字体变体设置 */
-    text-rendering: optimizeLegibility; /* 优化可读性 */
-    scrollbar-width: thin; /* 滚动条宽度 */
-  }
-
-  body {
-    @apply bg-bg text-fg; /* 背景和前景颜色 */
-  }
-
-  /* 深色模式下的滚动条样式 */
-  .dark {
+    @apply border-border outline-ring/50;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 850;
+    text-rendering: optimizeLegibility;
     scrollbar-width: thin;
-
-    @media (prefers-color-scheme: dark) {
-      * {
-        scrollbar-width: thin; /* 深色模式下的滚动条宽度 */
-      }
-    }
   }
 
-  /* 自定义滚动条样式 */
+  /* 主体样式 */
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* 滚动条样式 */
   *::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   *::-webkit-scrollbar-track {
-    background: transparent; /* 滚动条轨道背景 */
-    border-radius: 5px; /* 圆角 */
+    background: transparent;
+    border-radius: 5px;
   }
 
   *::-webkit-scrollbar-thumb {
-    @apply bg-muted; /* 滚动条拇指背景 */
-    border-radius: 14px; /* 圆角 */
-    border: 3px solid transparent; /* 边框 */
-  }
-}
-
-/* 其他基础样式 */
-@layer base {
-  * {
-    @apply border-border outline-ring/50; /* 边框和轮廓样式 */
-  }
-  body {
-    @apply bg-background text-foreground; /* 背景和前景颜色 */
+    @apply bg-muted;
+    border-radius: 14px;
+    border: 3px solid transparent;
   }
 }
 
 /* 工具类样式 */
 @layer utilities {
   .scrollbar-none {
-    -ms-overflow-style: none;  /* IE 和 Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
+  
   .scrollbar-none::-webkit-scrollbar {
-    display: none; /* Chrome, Safari 和 Opera */
+    display: none;
   }
 }

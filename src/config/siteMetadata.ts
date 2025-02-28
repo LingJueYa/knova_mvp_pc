@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 
 // 基础 URL 配置
-const BASE_URL = "https://tarot.example.com";
+const BASE_URL = "https://knova.example.com";
 
 // 导出 SITE_INFO，增加类型定义提升代码可维护性
 export const SITE_INFO = {
