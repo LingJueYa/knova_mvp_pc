@@ -2,6 +2,7 @@ import { proxy } from 'valtio'
 import { conversationActions } from '@/actions/conversation'
 import type { Message } from '@/actions/conversation'
 import { investmentQuestions } from '@/data/investment-questions'
+import { investmentConclusions } from '@/data/investment-conclusions'
 
 // 接口定义
 export interface DifyResponse {
@@ -31,6 +32,16 @@ interface ChatState {
   selectedQuestion: string | null
   currentQuestion: typeof investmentQuestions[0] | null
   currentQuestionIndex: number
+  isThinking: boolean
+  isStreaming: boolean
+  streamingComplete: boolean
+  showConclusions: boolean
+  currentConclusion: typeof investmentConclusions[0] | null
+  conclusionIndex: number
+  conclusionStreamingComplete: boolean;
+  showArticleLoading: boolean;
+  showArticleShowcase: boolean;
+  showTransition: boolean;
 }
 
 // 存储键常量
@@ -60,6 +71,16 @@ export const chatState = proxy<ChatState>({
   selectedQuestion: null, // 选中的问题
   currentQuestion: null,
   currentQuestionIndex: 0,
+  isThinking: false,
+  isStreaming: false,
+  streamingComplete: false,
+  showConclusions: false,
+  currentConclusion: null,
+  conclusionIndex: 0,
+  conclusionStreamingComplete: false,
+  showArticleLoading: false,
+  showArticleShowcase: false,
+  showTransition: false,
 })
 
 // 聊天操作集合
@@ -142,36 +163,13 @@ export const chatActions = {
     chatState.inputValue = ''
     chatState.lastValidInput = ''
 
-    try {
-      if (chatState.guidedMode) {
-        chatState.isLoading = true
-        const response = await fetch('/api/recommended-question', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: content })
-        })
-        
-        if (!response.ok) {
-          throw new Error('Failed to get recommendations')
-        }
-        
-        const data = await response.json()
-        console.log('Received recommendations:', data)
-        chatState.difyResponse = data
-      }
-    } catch (error) {
-      console.error('Error getting recommendations:', error)
-      
-      const errorMessage: Message = {
-        id: crypto.randomUUID(),
-        type: 'assistant',
-        content: '抱歉，获取推荐问题时出现错误',
-        timestamp: Date.now()
-      }
-      chatState.messages.push(errorMessage)
-    } finally {
+    // 如果是首次对话，开始投资问题流程
+    if (chatState.messages.length === 1) {
+      chatState.isLoading = true
+      // 模拟网络延迟
+      await new Promise(resolve => setTimeout(resolve, 1000))
       chatState.isLoading = false
-      chatState.isSendingDisabled = false
+      this.startInvestmentQuestions()
     }
 
     if (chatState.conversationId) {
@@ -181,6 +179,8 @@ export const chatActions = {
         console.error('Failed to save conversation:', error)
       }
     }
+
+    chatState.isSendingDisabled = false
   },
 
   // 推荐问题处理
@@ -230,14 +230,21 @@ export const chatActions = {
   },
 
   // 消息管理
-  addAssistantMessage(content: string) {
+  async addAssistantMessage(content: string) {
+    chatState.isLoading = true
+    
+    // 模拟 AI 思考延迟
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
       type: 'assistant', 
       content,
       timestamp: Date.now()
     }
+    
     chatState.messages.push(assistantMessage)
+    chatState.isLoading = false
   },
 
   // 状态重置
@@ -270,23 +277,152 @@ export const chatActions = {
     }
   },
 
-  selectInvestmentOption(optionText: string) {
-    this.submitMessage(optionText)
+  async selectInvestmentOption(optionText: string) {
+    // 添加用户选择到消息列表
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      type: 'user',
+      content: optionText,
+      timestamp: Date.now()
+    }
+    chatState.messages.push(userMessage)
     
     const nextIndex = chatState.currentQuestionIndex + 1
     if (nextIndex < investmentQuestions.length) {
+      // 1. 骨架屏动画
+      chatState.isLoading = true
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      chatState.isLoading = false
+      
+      // 2. 开始流式输出思考过程
+      chatState.isStreaming = true
       chatState.currentQuestion = investmentQuestions[nextIndex]
       chatState.currentQuestionIndex = nextIndex
       
-      this.addAssistantMessage(investmentQuestions[nextIndex].question)
+      // 等待流式输出完成后
+      await new Promise(resolve => {
+        const checkStreaming = setInterval(() => {
+          if (!chatState.isStreaming) {
+            clearInterval(checkStreaming)
+            resolve(true)
+          }
+        }, 100)
+      })
+
+      // 3. 将思考过程添加到消息列表
+      const thinkMessage: Message = {
+        id: crypto.randomUUID(),
+        type: 'assistant',
+        content: investmentQuestions[nextIndex].think,
+        timestamp: Date.now()
+      }
+      chatState.messages.push(thinkMessage)
+
+      // 4. 将问题添加到消息列表
+      const questionMessage: Message = {
+        id: crypto.randomUUID(),
+        type: 'assistant',
+        content: investmentQuestions[nextIndex].question,
+        timestamp: Date.now()
+      }
+      chatState.messages.push(questionMessage)
     } else {
-      chatState.currentQuestion = null
-      chatState.currentQuestionIndex = 0
+      chatState.currentQuestion = null;
+      chatState.currentQuestionIndex = 0;
+      
+      // 显示过渡内容
+      chatState.showTransition = true;
+      
+      // 5秒后开始显示结论，但不隐藏过渡内容
+      setTimeout(() => {
+        chatState.showConclusions = true;
+        this.startConclusionsDisplay();
+      }, 5000);
     }
   },
 
-  startInvestmentQuestions() {
+  async startInvestmentQuestions() {
+    // 1. 骨架屏动画
+    chatState.isLoading = true
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    chatState.isLoading = false
+    
+    // 2. 开始流式输出思考过程
+    chatState.isStreaming = true
     chatState.currentQuestion = investmentQuestions[0]
-    this.addAssistantMessage(investmentQuestions[0].question)
+    chatState.currentQuestionIndex = 0
+    
+    // 等待流式输出完成后
+    await new Promise(resolve => {
+      const checkStreaming = setInterval(() => {
+        if (!chatState.isStreaming) {
+          clearInterval(checkStreaming)
+          resolve(true)
+        }
+      }, 100)
+    })
+
+    // 3. 将思考过程添加到消息列表
+    const thinkMessage: Message = {
+      id: crypto.randomUUID(),
+      type: 'assistant',
+      content: investmentQuestions[0].think,
+      timestamp: Date.now()
+    }
+    chatState.messages.push(thinkMessage)
+
+    // 4. 将问题添加到消息列表
+    const questionMessage: Message = {
+      id: crypto.randomUUID(),
+      type: 'assistant',
+      content: investmentQuestions[0].question,
+      timestamp: Date.now()
+    }
+    chatState.messages.push(questionMessage)
+  },
+
+  async startConclusionsDisplay() {
+    chatState.conclusionIndex = 0;
+    await this.playNextConclusion();
+  },
+
+  async playNextConclusion() {
+    // 如果已经播放完所有结论
+    if (chatState.conclusionIndex >= investmentConclusions.length) {
+      chatState.showConclusions = false;
+      chatState.currentConclusion = null;
+      chatState.conclusionIndex = 0;
+      
+      // 显示加载动画
+      chatState.showArticleLoading = true;
+      
+      // 5秒后显示文章展示组件
+      setTimeout(() => {
+        chatState.showArticleLoading = false;
+        chatState.showArticleShowcase = true;
+      }, 5000);
+      return;
+    }
+
+    // 设置当前要播放的结论
+    chatState.currentConclusion = investmentConclusions[chatState.conclusionIndex];
+    chatState.streamingComplete = false;
+
+    // 等待当前结论播放完成
+    await new Promise<void>((resolve) => {
+      const checkComplete = setInterval(() => {
+        if (chatState.streamingComplete) {
+          clearInterval(checkComplete);
+          resolve();
+        }
+      }, 100);
+    });
+
+    // 等待一段时间后播放下一条
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 增加索引并继续播放下一条
+    chatState.conclusionIndex++;
+    await this.playNextConclusion();
   }
 } 

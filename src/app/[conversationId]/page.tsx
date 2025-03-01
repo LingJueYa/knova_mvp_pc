@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { chatActions } from '@/store/chat'
+import { chatActions } from '@/store/chat-demo'
 import Home from '../page'
 
 /**

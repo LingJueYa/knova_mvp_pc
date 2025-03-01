@@ -13,7 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { chatState, chatActions } from '@/store/chat'
+import { chatState, chatActions } from '@/store/chat-demo'
 import { chatInputSchema } from '@/schemas/chat'
 import { debounce, throttle } from 'lodash'
 

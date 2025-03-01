@@ -7,8 +7,8 @@ import HomeLink from "@/components/HomeLink";
 import GuessAsking from "@/components/GuessAsking";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from 'valtio'
-import { chatState, chatActions } from '@/store/chat'
-import ChatMessages from "@/components/ChatMessages";
+import { chatState, chatActions } from '@/store/chat-demo'
+import ChatMessages from "@/components/ChatMessagesDemo";
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 

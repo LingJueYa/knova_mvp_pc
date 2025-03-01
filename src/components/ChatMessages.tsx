@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useSnapshot } from 'valtio'
-import { chatState, chatActions } from '@/store/chat'
+import { chatState, chatActions } from '@/store/chat-demo'
 import { useEffect, useRef } from 'react'
 
 export default function ChatMessages() {

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { chatActions } from '@/store/chat';
+import { chatActions } from '@/store/chat-demo';
 import { guessQuestionData } from "@/data/guessQuestionData";
 
 // 动画配置常量

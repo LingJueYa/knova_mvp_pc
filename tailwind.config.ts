@@ -2,6 +2,7 @@
 import { withTV } from 'tailwind-variants/transformer'
 import tailwindcssAnimate from 'tailwindcss-animate'
 import tailwindcssReactAriaComponents from 'tailwindcss-react-aria-components'
+import daisyui from 'daisyui'
 
 const config = withTV({
   darkMode: ['class'],
@@ -100,7 +101,8 @@ const config = withTV({
   },
   plugins: [
     tailwindcssAnimate,
-    tailwindcssReactAriaComponents
+    tailwindcssReactAriaComponents,
+    daisyui
   ]
 })
 
