@@ -5,25 +5,26 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Playwrite_IT_Moderna } from 'next/font/google';
 import { ClerkProvider } from "@clerk/nextjs";
+import SplashScreenWrapper from "@/components/SplashScreen/SplashScreenWrapper";
 
-// 项目配置
+
 import { siteMetadata } from "@/config/siteMetadata";
 import { APP_VERSION } from "@/config/version";
 
-// 工具和样式
 import { cn } from "@/lib/utils";
 import "@/styles/global.css";
 
-// 类型定义
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-// 动态导入导航组件(保持SSR)
-const Navbar = dynamic(() => import("@/components/layout/Navbar"), {
+
+// 动态导入侧边栏组件(保持SSR)
+const Sidebar = dynamic(() => import("@/components/layout/Sidebar"), {
   ssr: true,
-  loading: () => <div className="h-16" aria-label="导航栏加载中" role="progressbar" />,
+  loading: () => <div className="w-16" aria-label="侧边栏加载中" role="progressbar" />,
 });
+
 
 // 字体配置
 const playwrite = Playwrite_IT_Moderna({
@@ -105,25 +106,32 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
           suppressHydrationWarning
         >
-          {/* 主布局容器 */}
-          <div 
-            className="h-screen flex flex-col px-4 sm:px-6 md:px-8"
-            role="main"
-          >
-            {/* 导航区域 */}
-            <header role="banner">
-              <Navbar />
-            </header>
-            
-            {/* 主内容区域 */}
-            <main 
-              className="h-[calc(100vh-56px)] max-w-screen-2xl w-full mx-auto overflow-hidden"
+          {/* 开屏动画包装器 */}
+          <SplashScreenWrapper>
+            {/* 主布局容器 */}
+            <div 
+              className="h-screen flex"
               role="main"
-              aria-label="主要内容区域"
             >
-              {children}
-            </main>
-          </div>
+              {/* 侧边栏区域 */}
+              <aside role="complementary" aria-label="侧边导航">
+                <Sidebar />
+              </aside>
+              
+              {/* 内容区域容器 */}
+              <div className="flex-1 flex flex-col overflow-hidden px-4 sm:px-6 md:px-8">
+                
+                {/* 主内容区域 */}
+                <main 
+                  className="h-[calc(100vh-56px)] max-w-screen-2xl w-full mx-auto overflow-hidden scrollbar-elegant"
+                  role="main"
+                  aria-label="主要内容区域"
+                >
+                  {children}
+                </main>
+              </div>
+            </div>
+          </SplashScreenWrapper>
         </body>
       </html>
     </ClerkProvider>

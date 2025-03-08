@@ -1,7 +1,6 @@
 import { proxy } from 'valtio'
 import { conversationActions } from '@/actions/conversation'
 import type { Message } from '@/actions/conversation'
-import { investmentQuestions } from '@/data/investment-questions'
 
 // 接口定义
 export interface DifyResponse {
@@ -29,8 +28,6 @@ interface ChatState {
   // Dify 相关状态
   difyResponse: DifyResponse | null
   selectedQuestion: string | null
-  currentQuestion: typeof investmentQuestions[0] | null
-  currentQuestionIndex: number
 }
 
 // 存储键常量
@@ -58,8 +55,6 @@ export const chatState = proxy<ChatState>({
   // Dify 相关
   difyResponse: null, // Dify响应
   selectedQuestion: null, // 选中的问题
-  currentQuestion: null,
-  currentQuestionIndex: 0,
 })
 
 // 聊天操作集合
@@ -270,23 +265,5 @@ export const chatActions = {
     }
   },
 
-  selectInvestmentOption(optionText: string) {
-    this.submitMessage(optionText)
-    
-    const nextIndex = chatState.currentQuestionIndex + 1
-    if (nextIndex < investmentQuestions.length) {
-      chatState.currentQuestion = investmentQuestions[nextIndex]
-      chatState.currentQuestionIndex = nextIndex
-      
-      this.addAssistantMessage(investmentQuestions[nextIndex].question)
-    } else {
-      chatState.currentQuestion = null
-      chatState.currentQuestionIndex = 0
-    }
-  },
 
-  startInvestmentQuestions() {
-    chatState.currentQuestion = investmentQuestions[0]
-    this.addAssistantMessage(investmentQuestions[0].question)
-  }
 } 

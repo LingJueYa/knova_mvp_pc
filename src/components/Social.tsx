@@ -1,58 +1,92 @@
-import { Send, Twitch, Instagram, Shield } from "lucide-react"
+import { Send, Shield } from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import dynamic from "next/dynamic"
+import { SocialItem, SocialProps } from "@/types/social"
 
-const Social = () => {
-  const socialItems = [
+// 动态导入SVG组件
+const XIcon = dynamic(() => import("@/components/icons/XIcon"))
+const YoutubeIcon = dynamic(() => import("@/components/icons/YoutubeIcon"))
+const DiscordIcon = dynamic(() => import("@/components/icons/DiscordIcon"))
+
+/**
+ * 社交媒体图标组件
+ * 默认灰色，hover时显示品牌特定颜色
+ */
+const Social = ({ className, additionalItems = [] }: SocialProps = {}) => {
+  const socialItems: SocialItem[] = [
     { 
       icon: Shield, 
-      label: "Guard your privacy", 
-      color: "text-success hover:text-success/80",
-      ariaLabel: "保护隐私"
+      tooltip: "Guard your privacy", 
+      color: "text-emerald-600 hover:text-emerald-600",
+      ariaLabel: "保护隐私",
+      isLucide: true
     },
     { 
       icon: Send, 
-      label: "Telegram", 
-      color: "text-[#7D7D7D] hover:text-black/80",
-      ariaLabel: "访问 Telegram 频道"
+      tooltip: "Telegram", 
+      color: "text-gray-500 hover:text-[#229ED9]",
+      ariaLabel: "访问 Telegram 频道",
+      isLucide: true
     },
     { 
-      icon: Twitch, 
-      label: "Twitch", 
-      color: "text-[#7D7D7D] hover:text-black/80",
-      ariaLabel: "访问 Twitch 频道"
+      icon: XIcon, 
+      tooltip: "X", 
+      color: "text-gray-500 hover:text-[#333333]",
+      ariaLabel: "访问 X 主页",
+      isComponent: true
     },
     { 
-      icon: Instagram, 
-      label: "Instagram", 
-      color: "text-[#7D7D7D] hover:text-black/80",
-      ariaLabel: "访问 Instagram 主页"
+      icon: YoutubeIcon, 
+      tooltip: "YouTube", 
+      color: "text-gray-500 hover:text-[#CC0000]",
+      ariaLabel: "访问 YouTube 频道",
+      isComponent: true
+    },
+    { 
+      icon: DiscordIcon, 
+      tooltip: "Discord", 
+      color: "text-gray-500 hover:text-[#5865F2]",
+      ariaLabel: "加入 Discord 社区",
+      isComponent: true
     },
   ]
+
+  // 合并额外的社交媒体项（如果有）
+  const allItems = [...socialItems, ...additionalItems]
 
   return (
     <TooltipProvider delayDuration={200}>
       <div 
-        className="flex items-center h-9 space-x-1"
+        className={`flex items-center space-x-1 h-9 ${className || ''}`}
         role="navigation"
         aria-label="社交媒体链接"
       >
-        {socialItems.map((item, index) => (
+        {allItems.map((item, index) => (
           <Tooltip key={index}>
             <TooltipTrigger asChild>
               <button 
-                className={`p-1.5 rounded-lg transition-all duration-300 ease-in-out ${item.color} focus:outline-none focus:ring-2 focus:ring-gray-300 hover:scale-110`}
+                className={`p-1.5 rounded-lg transition-all duration-300 ease-in-out ${item.color} focus:outline-none focus:ring-2 focus:ring-gray-300 hover:bg-gray-100`}
                 aria-label={item.ariaLabel}
               >
-                <item.icon className="w-5 h-5" />
+                {item.isLucide ? (
+                  // Lucide 图标渲染
+                  <item.icon className="w-5 h-5" />
+                ) : item.isComponent ? (
+                  // 自定义SVG组件渲染
+                  <item.icon className="w-5 h-5" />
+                ) : (
+                  // 其他情况（应该不会发生，只是为了类型安全）
+                  <div className="w-5 h-5" />
+                )}
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{item.label}</p>
+              <p>{item.tooltip}</p>
             </TooltipContent>
           </Tooltip>
         ))}
