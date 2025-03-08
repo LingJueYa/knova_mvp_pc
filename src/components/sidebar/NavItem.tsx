@@ -66,7 +66,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
                 ? "text-orange-600 dark:text-orange-400" 
                 : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
             )}
-            onClick={() => playSound("/sounds/sidebar-click.mp3")}
+            onClick={() => playSound("/music/nav-click.mp3")}
             aria-current={isActive ? "page" : undefined}
           >
             {/* 导航图标 */}

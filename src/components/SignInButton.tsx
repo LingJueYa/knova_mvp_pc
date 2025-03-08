@@ -57,7 +57,7 @@ export function CustomSignInButton() {
         onClick={() => playSound("/music/login-button.mp3")}
       >
         <span className={cn(
-          "absolute inset-0 bg-gradient-to-b from-white to-[#f5f5f7] opacity-0",
+          "absolute inset-0 bg-gradient-to-b from-white to-[#f5f5f7] opacity-0 dark:bg-white/80",
           "transition-opacity duration-300",
           isHovered && "opacity-100"
         )} />

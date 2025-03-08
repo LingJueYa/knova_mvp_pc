@@ -92,7 +92,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <body
           className={cn(
             // 基础样式
-            "h-screen bg-white text-gray-900",
+            "h-screen bg-background text-foreground",
             "antialiased",
             // 选择文本样式
             "selection:bg-primary/20",
@@ -100,8 +100,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             "touch-pan-y",
             "overscroll-none",
             "overflow-hidden",
-            // 深色模式适配
-            "dark:bg-gray-900 dark:text-gray-100",
             // 减少动画
             "@media(prefers-reduced-motion: reduce) motion-reduce"
           )}

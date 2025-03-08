@@ -105,7 +105,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
             
             {/* Busy 状态标签 */}
             {status === "busy" && (
-              <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-white text-orange-500 border border-orange-400 tracking-wider">
+              <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-white text-orange-500 border border-orange-400 tracking-wider dark:bg-white">
                 Busy
               </span>
             )}
