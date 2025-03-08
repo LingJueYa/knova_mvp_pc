@@ -33,7 +33,7 @@ import HeaderSection from "@/components/sidebar/HeaderSection";
 import { useSidebarSound } from "@/hooks/useSidebarSound";
 import { fadeInVariants } from "@/animations/sidebar";
 
-
+import { CreateBotButton } from "@/components/sidebar/CreateBotButton";
 import { sidebarNavItems } from "@/data/sidebar/nav";         // 主导航项目数据
 import { sidebarToolsItems } from "@/data/sidebar/tools";     // 工具栏项目数据
 import { mockBots } from "@/data/mock/bot";                   // 机器人列表数据
@@ -137,14 +137,33 @@ const GlobalSidebar = () => {
                       playSound={playSound}
                     />
                     
-                    {/* Bots 分隔线 */}
-                    <SectionTitle title="Bots" />
+                    {/* 我的 Bots 分隔线 */}
+                    <SectionTitle title="My Bots" />
                     
-                    {/* Bots 列表区域 */}
+                    {/* 我的 Bots 创建按钮 */}
+                    <CreateBotButton 
+                      currentBotCount={mockBots.length}
+                      onCreateBot={() => {}}
+                    />
+
+                    {/* 我的 Bots 列表区域 */}
                     <MenuSection 
                       items={mockBots}
                       itemType="bot"
-                      label="机器人助手"
+                      label="我的 Bots 列表"
+                      className="py-2 px-3 flex-shrink-0"
+                      pathname={pathname}
+                      playSound={playSound}
+                    />
+
+                    {/* 关注 Bots 分隔线 */}
+                    <SectionTitle title="Concerned Bots" />
+                    
+                    {/* 关注 Bots 列表区域 */}
+                    <MenuSection 
+                      items={mockBots}
+                      itemType="bot"
+                      label="关注的 Bots 列表"
                       className="py-2 px-3 flex-shrink-0"
                       pathname={pathname}
                       playSound={playSound}

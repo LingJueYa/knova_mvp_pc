@@ -65,7 +65,7 @@ export function CustomSignInButton() {
         <span className="relative flex items-center justify-center">
           <Login
             className={cn(
-              "mr-2 w-4 h-4 transition-all duration-300",
+              "mr-2 w-5 h-5 transition-all duration-300",
               isHovered && "text-[#0066cc]"
             )}
             aria-hidden="true"

@@ -34,6 +34,11 @@ export const iconConfig: Record<string, IconConfig> = {
     active: "/svg/help-active.svg",
     glowColor: "rgba(74, 144, 226, 0.6)"
   },
+  blog: { 
+    default: "/svg/blog-default.svg",
+    active: "/svg/blog-active.svg",
+    glowColor: "rgba(179, 136, 255, 0.6)"
+  },
   setting: { 
     default: "/svg/setting-default.svg",
     active: "/svg/setting-active.svg",

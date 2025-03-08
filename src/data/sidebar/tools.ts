@@ -11,9 +11,17 @@ export const sidebarToolsItems: SidebarItemType[] = [
     tooltip: "How can I help you?" 
   },
   { 
+    id: "blog", 
+    icon: "blog", 
+    label: "Blog", 
+    href: "/blog", 
+    tooltip: "Check out what we've been updating lately" 
+  },
+  { 
     id: "setting", 
     icon: "setting", 
     label: "Setting", 
     href: "/setting", 
-    tooltip: "Set your preferences" },
+    tooltip: "Set your preferences" 
+  },
 ];

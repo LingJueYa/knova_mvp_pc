@@ -10,9 +10,10 @@ import { motion } from "framer-motion";
 import type { SidebarBotItemType } from "@/types/sidebar";
 
 import {
-  SidebarMenuItem,
   SidebarMenuButton
 } from "@/components/ui/sidebar";
+
+import { cn } from "@/lib/utils";
 
 /**
  * 机器人项组件的属性接口
@@ -28,8 +29,17 @@ interface BotItemProps {
  * 渲染侧边栏中的单个机器人项，包含头像、名称及激活状态动画效果
  */
 const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
+  const { name, avatarUrl, href, status, hasNewMessage } = bot;
+
+  // 根据状态确定头像样式
+  const avatarClassName = cn(
+    "rounded-[10px] object-cover transition-all duration-300",
+    // 根据状态添加样式
+    status === "offline" && "filter grayscale opacity-70"
+  );
+
   return (
-    <SidebarMenuItem className="mb-3.5 relative">
+    <li className={cn("mb-3.5 relative", isActive && "active-item")}>
       {/* 当机器人项处于激活状态时显示的动画背景 */}
       {isActive && (
         <motion.div 
@@ -45,7 +55,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
       )}
       {/* 机器人链接 */}
       <Link 
-        href={bot.href} 
+        href={href} 
         passHref
         onClick={() => playSound("/music/nav-click.mp3")}
         aria-current={isActive ? "page" : undefined}
@@ -59,34 +69,48 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
             : 'hover:bg-gray-50/70 active:bg-gray-100/50 transition-all duration-200'}`}
         >
           {/* 头像容器 */}
-          <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-            {/* 头像图片容器，激活状态有额外的环形高亮 */}
-            <div className={`w-6 h-6 rounded-md overflow-hidden relative ${
-              isActive ? 'ring-2 ring-orange-300 ring-opacity-70' : ''
-            }`}>
-              {/* 机器人头像图片，激活状态有放大效果 */}
+          <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative">
+            {/* 新消息指示器 */}
+            {hasNewMessage && (
+              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#55b685] rounded-full z-10 shadow-[0_0_4px_rgba(85,182,133,0.2)]" />
+            )}
+            
+            {/* 头像图片容器 */}
+            <div className="relative w-8 h-8 overflow-hidden">
+              {/* 机器人头像图片 */}
               <Image 
-                src={bot.avatarUrl}
-                alt=""
+                src={avatarUrl}
+                alt={name}
                 fill
-                sizes="24px"
-                className={`object-cover transition-transform duration-300 ${
-                  isActive ? 'scale-110' : 'scale-100 hover:scale-105'
-                }`}
+                sizes="40px"
+                className={cn(
+                  avatarClassName,
+                  "transition-all duration-300"
+                )}
               />
             </div>
           </span>
-          {/* 机器人名称 */}
-          <span 
-            className={`font-medium text-[16px] transition-all duration-200 tracking-widest ${
-              isActive ? 'text-gray-900' : 'text-gray-700'
-            }`}
-          >
-            {bot.name}
-          </span>
+          
+          {/* 机器人名称和状态 */}
+          <div className="flex items-center gap-2">
+            <span 
+              className={`font-medium text-[16px] transition-all duration-200 tracking-widest ${
+                isActive ? 'text-gray-900' : 'text-gray-700'
+              }`}
+            >
+              {name}
+            </span>
+            
+            {/* Busy 状态标签 */}
+            {status === "busy" && (
+              <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-white text-orange-500 border border-orange-400 tracking-wider">
+                Busy
+              </span>
+            )}
+          </div>
         </SidebarMenuButton>
       </Link>
-    </SidebarMenuItem>
+    </li>
   );
 };
 
