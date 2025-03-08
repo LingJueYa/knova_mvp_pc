@@ -89,7 +89,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
     <AnimatePresence mode="wait">
       {isVisible && showSplash && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-white z-50"
+          className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900 z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.5 } }}
           exit={{ 
@@ -102,7 +102,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
         >
           {/* 纯白背景 */}
           <motion.div
-            className="absolute inset-0 bg-white"
+            className="absolute inset-0 bg-white dark:bg-gray-900"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.8 } }}
           />
@@ -114,7 +114,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               variants={shapeVariants}
               initial="hidden"
               animate="visible"
-              className="absolute top-1/2 left-1/2 w-[35vw] h-[35vw] border-[0.5px] border-black rounded-full opacity-[0.01] transform -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 left-1/2 w-[35vw] h-[35vw] border-[0.5px] border-black dark:border-white rounded-full opacity-[0.01] transform -translate-x-1/2 -translate-y-1/2"
             />
           </div>
 
@@ -130,7 +130,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               className="text-4xl md:text-6xl font-thin mx-[0.2rem] relative tracking-widest"
               style={{ letterSpacing: '0.05em' }}
             >
-              <span className="text-black font-playwrite">K</span>
+              <span className="text-black dark:text-white font-playwrite">K</span>
             </motion.div>
             
             {/* n */}
@@ -142,7 +142,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               className="text-4xl md:text-6xl font-thin mx-[0.2rem] relative tracking-widest"
               style={{ letterSpacing: '0.05em' }}
             >
-              <span className="text-black font-playwrite">n</span>
+              <span className="text-black dark:text-white font-playwrite">n</span>
             </motion.div>
             
             {/* o */}
@@ -154,7 +154,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               className="text-4xl md:text-6xl font-thin mx-[0.2rem] relative tracking-widest"
               style={{ letterSpacing: '0.05em' }}
             >
-              <span className="text-black font-playwrite">o</span>
+              <span className="text-black dark:text-white font-playwrite">o</span>
             </motion.div>
             
             {/* v */}
@@ -166,7 +166,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               className="text-4xl md:text-6xl font-thin mx-[0.2rem] relative tracking-widest"
               style={{ letterSpacing: '0.05em' }}
             >
-              <span className="text-black font-playwrite">v</span>
+              <span className="text-black dark:text-white font-playwrite">v</span>
             </motion.div>
             
             {/* a */}
@@ -178,13 +178,13 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
               className="text-4xl md:text-6xl font-thin mx-[0.2rem] relative tracking-widest"
               style={{ letterSpacing: '0.05em' }}
             >
-              <span className="text-black font-playwrite">a</span>
+              <span className="text-black dark:text-white font-playwrite">a</span>
             </motion.div>
           </div>
           
           {/* 艺术下划线 */}
           <motion.div 
-            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 translate-y-10 h-[0.5px] bg-black"
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 translate-y-10 h-[0.5px] bg-black dark:bg-white"
             variants={lineVariants}
             initial="hidden"
             animate="visible"

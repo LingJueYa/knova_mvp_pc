@@ -89,6 +89,22 @@ const GlobalSidebar = () => {
       >
         {/* 全局CSS样式定义 */}
         <style jsx global>{`
+          /* 深色模式侧边栏优化 */
+          @media (prefers-color-scheme: dark) {
+            .sidebar-scroll {
+              scrollbar-color: rgba(75, 85, 99, 0.5) rgba(31, 41, 55, 0.1);
+            }
+            
+            .sidebar-scroll::-webkit-scrollbar-track {
+              background-color: rgba(31, 41, 55, 0.1);
+            }
+            
+            .sidebar-scroll::-webkit-scrollbar-thumb {
+              background-color: rgba(75, 85, 99, 0.5);
+              border-radius: 6px;
+            }
+          }
+          
           /* @keyframes subtle-pulse {
             0% {
               filter: drop-shadow(0 0 0.5px rgba(253, 161, 114, 0));
@@ -114,13 +130,14 @@ const GlobalSidebar = () => {
           <SidebarProvider defaultOpen={true}>
             <Sidebar 
               className="min-h-screen w-72" 
-              aria-label="主导航菜单"
+              aria-label="main-navigation"
             >
               <SidebarContent className="p-2 h-full flex flex-col">
                 
                 {/* 侧边栏主内容区域 */}
-                <div className="bg-gray-50/80 rounded-3xl overflow-hidden transition-all duration-300 backdrop-blur-sm h-full">
-                  <div className="bg-white/95 m-1 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-purple-100/80 overflow-y-auto h-[90%] flex flex-col sidebar-scroll">
+                <div className="bg-gray-50/80 dark:bg-gray-900/90 rounded-3xl overflow-hidden transition-all duration-300 backdrop-blur-sm h-full">
+                  <div className="bg-white/95 dark:bg-gray-800/95 m-1 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] border border-purple-100/80 dark:border-gray-700/50 overflow-y-auto h-[90%] flex flex-col sidebar-scroll">
+                  
                   
                     {/* 顶部区域 */}
                     <HeaderSection 
@@ -132,7 +149,7 @@ const GlobalSidebar = () => {
                     <MenuSection 
                       items={sidebarNavItems}
                       itemType="nav"
-                      label="主要功能"
+                      label="main-features"
                       pathname={pathname}
                       playSound={playSound}
                     />
@@ -150,7 +167,7 @@ const GlobalSidebar = () => {
                     <MenuSection 
                       items={mockBots}
                       itemType="bot"
-                      label="我的 Bots 列表"
+                      label="my-bots-list"
                       className="py-2 px-3 flex-shrink-0"
                       pathname={pathname}
                       playSound={playSound}
@@ -163,7 +180,7 @@ const GlobalSidebar = () => {
                     <MenuSection 
                       items={mockBots}
                       itemType="bot"
-                      label="关注的 Bots 列表"
+                      label="concerned-bots-list"
                       className="py-2 px-3 flex-shrink-0"
                       pathname={pathname}
                       playSound={playSound}
@@ -176,7 +193,7 @@ const GlobalSidebar = () => {
                     <MenuSection 
                       items={sidebarToolsItems}
                       itemType="nav"
-                      label="工具栏"
+                      label="tools"
                       pathname={pathname}
                       playSound={playSound}
                     />
@@ -187,7 +204,7 @@ const GlobalSidebar = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="pt-6 pb-3 px-6"
+                    className="pt-6 pb-3 px-6 flex flex-col gap-4"
                   >
                     <Social />
                   </motion.div>

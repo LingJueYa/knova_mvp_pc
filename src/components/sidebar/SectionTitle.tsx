@@ -32,14 +32,14 @@ const SectionTitle = ({ title, className = "px-6 pb-3" }: SectionTitleProps) => 
       <div className="flex items-center">
         {/* 标题文本 */}
         <span 
-          className="text-xs font-semibold text-gray-500 uppercase tracking-widest" 
+          className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest" 
           style={{ fontSize: '11px', letterSpacing: '0.1em' }}  // 精细控制字体大小和字间距
         >
           {title}
         </span>
         {/* 分隔线 */}
         <div className="ml-2 flex-grow">
-          <SidebarSeparator className="bg-gray-200/80 h-[0.5px]" />
+          <SidebarSeparator className="bg-gray-200/80 dark:bg-gray-600/30 h-[0.5px]" />
         </div>
       </div>
     </motion.div>

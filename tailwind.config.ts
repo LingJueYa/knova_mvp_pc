@@ -9,6 +9,13 @@ const config = withTV({
   content: [ "./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}", ],
   theme: {
   	extend: {
+      keyframes: {
+        'border-slide': {
+          '0%': { borderColor: 'transparent', transform: 'scale(0.95)' },
+          '50%': { borderWidth: '3px' },
+          '100%': { transform: 'scale(1)' }
+        }
+      },
   		colors: {
   			light: 'hsl(var(--light))',
   			dark: 'hsl(var(--dark))',
@@ -108,7 +115,10 @@ const config = withTV({
   			playwrite: [
   				'var(--font-playwrite)'
   			]
-  		}
+  		},
+      animation: {
+        'border-slide': 'border-slide 0.5s ease-out forwards'
+      }
   	}
   },
   plugins: [

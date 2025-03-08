@@ -63,15 +63,15 @@ export function CreateBotButton({
         variant="outline"
         disabled={isLimitReached}
         className={cn(
-          "relative overflow-hidden w-full bg-white border-[#e1e1e1] text-[#1d1d1f]",
+          "relative overflow-hidden w-full bg-white dark:bg-gray-800 border-[#e1e1e1] dark:border-gray-700 text-[#1d1d1f] dark:text-gray-200",
           "px-5 py-2.5 h-10 rounded-full tracking-wide font-medium text-sm",
           "transition-all duration-300 ease-out",
           "shadow-[0_0_0_rgba(0,0,0,0)]",
-          "hover:bg-[#f5f5f7] hover:border-[#d2d2d7] hover:shadow-[0_2px_5px_rgba(0,0,0,0.05)]",
-          "active:scale-[0.98] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]",
-          isHovered && !isLimitReached && "bg-[#f5f5f7] border-[#d2d2d7]",
-          isPressed && !isLimitReached && "scale-[0.98] bg-[#f0f0f2]",
-          isLimitReached && "opacity-60 cursor-not-allowed hover:bg-white hover:border-[#e1e1e1] hover:shadow-none active:scale-100"
+          "hover:bg-[#f5f5f7] dark:hover:bg-gray-700 hover:border-[#d2d2d7] dark:hover:border-gray-600 hover:shadow-[0_2px_5px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_2px_5px_rgba(0,0,0,0.2)]",
+          "active:scale-[0.98] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,0.3)]",
+          isHovered && !isLimitReached && "bg-[#f5f5f7] dark:bg-gray-700 border-[#d2d2d7] dark:border-gray-600",
+          isPressed && !isLimitReached && "scale-[0.98] bg-[#f0f0f2] dark:bg-gray-700/90",
+          isLimitReached && "opacity-60 cursor-not-allowed hover:bg-white dark:hover:bg-gray-800 hover:border-[#e1e1e1] dark:hover:border-gray-700 hover:shadow-none active:scale-100"
         )}
         onMouseEnter={() => !isLimitReached && setIsHovered(true)}
         onMouseLeave={() => {
@@ -83,7 +83,7 @@ export function CreateBotButton({
         onClick={handleCreateBot}
       >
         <span className={cn(
-          "absolute inset-0 bg-gradient-to-b from-white to-[#f5f5f7] opacity-0",
+          "absolute inset-0 bg-gradient-to-b from-white to-[#f5f5f7] dark:from-gray-700 dark:to-gray-800 opacity-0",
           "transition-opacity duration-300",
           isHovered && !isLimitReached && "opacity-100"
         )} />
@@ -93,14 +93,14 @@ export function CreateBotButton({
             <PlusCircle
               className={cn(
                 "mr-2 w-5 h-5 transition-colors duration-300",
-                isHovered ? "text-[#FE7600]" : "text-[#1d1d1f]"
+                isHovered ? "text-[#FE7600] dark:text-[#FF9940]" : "text-[#1d1d1f] dark:text-gray-200"
               )}
               aria-hidden="true"
             />
           )}
           <span className={cn(
             "tracking-wider transition-colors duration-300",
-            isHovered && !isLimitReached ? "text-[#FE7600]" : "text-[#1d1d1f]"
+            isHovered && !isLimitReached ? "text-[#FE7600] dark:text-[#FF9940]" : "text-[#1d1d1f] dark:text-gray-200"
           )}>
             {isLimitReached ? "Creation has reached its limit" : "Create Bot"}
           </span>
@@ -117,7 +117,7 @@ export function CreateBotButton({
       
       {/* 底部提示文字 - 仅在未达上限时显示 */}
       {!isLimitReached && (
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           You can create {remainingBots} / {maxBots} more bots
         </p>
       )}

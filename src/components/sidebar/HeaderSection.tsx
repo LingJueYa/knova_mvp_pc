@@ -21,10 +21,10 @@ const HeaderSection = ({ isSignedIn, playSound }: HeaderSectionProps) => {
         <Link 
           href="/" 
           onClick={() => playSound("/music/nav-click.mp3")} 
-          className="cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
+          className="cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800 rounded-xl"
         >
           <div className="text-left">
-            <span className="text-xl font-medium tracking-widest text-gray-800 group-hover:text-gray-900 transition-colors font-playwrite">
+            <span className="text-xl font-medium tracking-widest text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors font-playwrite">
               Knova
             </span>
           </div>

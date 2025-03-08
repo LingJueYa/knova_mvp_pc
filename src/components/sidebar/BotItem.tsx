@@ -43,7 +43,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
       {/* 当机器人项处于激活状态时显示的动画背景 */}
       {isActive && (
         <motion.div 
-          className="absolute inset-0 bg-white border border-orange-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] rounded-2xl z-0"
+          className="absolute inset-0 bg-white dark:bg-gray-800 border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.15)] rounded-2xl z-0"
           layoutId="activeItem"
           transition={{ 
             type: "spring", 
@@ -66,13 +66,13 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
           isActive={isActive}
           className={`flex items-center gap-2 px-5 py-5 rounded-2xl w-full ${isActive 
             ? '!bg-transparent' 
-            : 'hover:bg-gray-50/70 active:bg-gray-100/50 transition-all duration-200'}`}
+            : 'hover:bg-gray-50/70 dark:hover:bg-gray-700/40 active:bg-gray-100/50 dark:active:bg-gray-700/60 transition-all duration-200'}`}
         >
           {/* 头像容器 */}
           <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative">
             {/* 新消息指示器 */}
             {hasNewMessage && (
-              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#55b685] rounded-full z-10 shadow-[0_0_4px_rgba(85,182,133,0.2)]" />
+              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#55b685] dark:bg-[#6ece9a] rounded-full z-10 shadow-[0_0_4px_rgba(85,182,133,0.2)] dark:shadow-[0_0_4px_rgba(110,206,154,0.4)]" />
             )}
             
             {/* 头像图片容器 */}
@@ -95,7 +95,9 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
           <div className="flex items-center gap-2">
             <span 
               className={`font-medium text-[16px] transition-all duration-200 tracking-widest ${
-                isActive ? 'text-gray-900' : 'text-gray-700'
+                isActive 
+                  ? 'text-gray-900 dark:text-gray-100' 
+                  : 'text-gray-700 dark:text-gray-300'
               }`}
             >
               {name}
