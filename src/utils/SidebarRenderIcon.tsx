@@ -29,27 +29,27 @@ export const sidebarRenderIcon = (iconName: string, isActive: boolean = false) =
   if (icon.default && icon.active) {
     return (
       <div className="relative w-6 h-6 flex items-center justify-center" aria-hidden="true">
-        <div className={`absolute w-full h-full transition-opacity duration-300 ease-out ${isActive ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`absolute flex items-center justify-center w-full h-full transition-opacity duration-300 ease-out ${isActive ? 'opacity-0' : 'opacity-100'}`}>
           <Image
             src={icon.default}
-            alt=""
+            alt={iconName}
             width={24}
             height={24}
-            className="w-full h-full object-contain"
+            className="w-[24px] h-[24px] object-contain"
           />
         </div>
         <motion.div 
-          className={`absolute w-full h-full transition-opacity duration-300 ease-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute flex items-center justify-center w-full h-full transition-opacity duration-300 ease-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
           animate={isActive ? {
             filter: `drop-shadow(0 0 3px ${glowColor})`
           } : {}}
         >
           <Image
             src={icon.active}
-            alt=""
+            alt={iconName}
             width={24}
             height={24}
-            className="w-full h-full object-contain"
+            className="w-[24px] h-[24px] object-contain"
           />
         </motion.div>
       </div>

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { sidebarRenderIcon } from "@/utils/SidebarRenderIcon";
 import type { SidebarItemType } from "@/types/sidebar";
+import { cn } from "@/lib/utils";
 
 import {
   Tooltip,
@@ -16,8 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import {
-  SidebarMenuItem,
-  SidebarMenuButton
+  SidebarMenuItem
 } from "@/components/ui/sidebar";
 
 /**
@@ -45,55 +45,51 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
           {/* 当导航项处于激活状态时显示的动画背景 */}
           {isActive && (
             <motion.div 
-              className="absolute inset-0 bg-white border border-orange-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] rounded-2xl z-0"
+              className="absolute inset-0 bg-white dark:bg-gray-800 border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.1)] rounded-2xl z-0"
               layoutId="activeItem"
               transition={{ 
                 type: "spring", 
-                stiffness: 300,
-                damping: 30,
-                mass: 1
+                stiffness: 320, 
+                damping: 30, 
+                duration: 0.2
               }}
             />
           )}
+          
           {/* 导航链接 */}
-          <Link 
-            href={item.href} 
-            passHref 
-            onClick={() => playSound("/music/nav-click.mp3")}
+          <Link
+            href={item.href}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2.5 text-base font-medium tracking-wider rounded-xl z-10 relative",
+              "transition-all duration-200 ease-out",
+              isActive 
+                ? "text-orange-600 dark:text-orange-400" 
+                : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+            )}
+            onClick={() => playSound("/sounds/sidebar-click.mp3")}
             aria-current={isActive ? "page" : undefined}
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 rounded-2xl relative z-10"
           >
-            {/* 导航按钮 */}
-            <SidebarMenuButton 
-              isActive={isActive}
-              className={`flex items-center gap-2 px-5 py-5 rounded-2xl w-full ${isActive 
-                ? '!bg-transparent' 
-                : 'hover:bg-gray-50/70 active:bg-gray-100/50 transition-all duration-200'}`}
-            >
-              {/* 图标容器 */}
-              <span className={`flex-shrink-0 w-8 flex items-center justify-center transition-all duration-200 ${
-                isActive ? 'text-orange-500' : 'text-gray-500 group-hover:text-gray-700'
-              }`}>
-                {sidebarRenderIcon(item.icon, isActive)}
-              </span>
-              {/* 文本标签 */}
-              <span 
-                className={`mr-2 font-medium text-[16px] transition-all duration-200 tracking-wider ${
-                  isActive ? 'text-gray-900' : 'text-gray-700'
-                }`}
-              >
-                {item.label}
-              </span>
-            </SidebarMenuButton>
+            {/* 导航图标 */}
+            <span className="flex-shrink-0 w-6 h-6">
+              {sidebarRenderIcon(item.icon, isActive)}
+            </span>
+            
+            {/* 导航文本 */}
+            <span className="pt-0.5">{item.label}</span>
           </Link>
         </SidebarMenuItem>
       </TooltipTrigger>
+      
       {/* 工具提示内容 */}
-      <TooltipContent side="right">
+      <TooltipContent 
+        side="right" 
+        sideOffset={10}
+        className="bg-white/95 dark:bg-gray-800/95 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 shadow-sm rounded-xl px-3 py-1.5"
+      >
         {tooltipText}
       </TooltipContent>
     </Tooltip>
   );
 };
 
-export default NavItem; 
+export default NavItem;
