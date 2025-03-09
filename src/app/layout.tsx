@@ -4,10 +4,8 @@ import React from "react";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Playwrite_IT_Moderna } from 'next/font/google';
-import { ClerkProvider } from "@clerk/nextjs";
 import SplashScreenWrapper from "@/components/SplashScreen/SplashScreenWrapper";
 import { ThemeProvider } from "next-themes";
-
 
 import { siteMetadata } from "@/config/siteMetadata";
 import { APP_VERSION } from "@/config/version";
@@ -33,6 +31,8 @@ const playwrite = Playwrite_IT_Moderna({
   variable: '--font-playwrite',
   weight: ['100', '200', '300', '400'],
 });
+
+import ClerkThemeProvider from "@/providers/ClerkThemeProvider";
 
 // SEO 元数据配置
 export const metadata: Metadata = {
@@ -76,41 +76,41 @@ export default function RootLayout({ children }: RootLayoutProps) {
   }
 
   return (
-    <ClerkProvider>
-      <html 
-        lang="zh-CN" 
-        suppressHydrationWarning 
-        className={`h-full ${playwrite.variable}`}
+    <html 
+      lang="zh-CN" 
+      suppressHydrationWarning 
+      className={`h-full ${playwrite.variable}`}
+    >
+      <head>
+        <link 
+          rel="manifest" 
+          href="/manifest.json"
+        />
+        <meta name="color-scheme" content="light dark" />
+      </head>
+      <body
+        className={cn(
+          // 基础样式
+          "h-screen bg-background dark:bg-[#2d2d2d] text-foreground",
+          "antialiased",
+          // 选择文本样式
+          "selection:bg-primary/20",
+          // 触摸和滚动行为
+          "touch-pan-y",
+          "overscroll-none",
+          "overflow-hidden",
+          // 减少动画
+          "@media(prefers-reduced-motion: reduce) motion-reduce"
+        )}
+        suppressHydrationWarning
       >
-        <head>
-          <link 
-            rel="manifest" 
-            href="/manifest.json"
-          />
-          <meta name="color-scheme" content="light dark" />
-        </head>
-        <body
-          className={cn(
-            // 基础样式
-            "h-screen bg-background text-foreground",
-            "antialiased",
-            // 选择文本样式
-            "selection:bg-primary/20",
-            // 触摸和滚动行为
-            "touch-pan-y",
-            "overscroll-none",
-            "overflow-hidden",
-            // 减少动画
-            "@media(prefers-reduced-motion: reduce) motion-reduce"
-          )}
-          suppressHydrationWarning
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ClerkThemeProvider>
             {/* 开屏动画包装器 */}
             <SplashScreenWrapper>
               {/* 主布局容器 */}
@@ -137,9 +137,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </div>
               </div>
             </SplashScreenWrapper>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          </ClerkThemeProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

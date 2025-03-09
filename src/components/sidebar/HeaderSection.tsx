@@ -1,12 +1,20 @@
+"use client"
+
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CustomSignInButton, CustomUserButton } from "@/components/SignInButton";
+import dynamic from "next/dynamic";
 
 interface HeaderSectionProps {
   isSignedIn: boolean;
   playSound: (url: string) => void;
 }
+
+// 动态导入AuthButtons组件，带有SSR禁用，避免初始渲染时的ClerkProvider错误
+const AuthButtons = dynamic(() => import("./AuthButtons"), { 
+  ssr: false,
+  loading: () => <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+});
 
 const HeaderSection = ({ isSignedIn, playSound }: HeaderSectionProps) => {
   return (
@@ -31,13 +39,7 @@ const HeaderSection = ({ isSignedIn, playSound }: HeaderSectionProps) => {
         </Link>
         
         {/* 右侧登录按钮 / 用户头像 */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          {isSignedIn ? <CustomUserButton /> : <CustomSignInButton />}
-        </motion.div>
+        <AuthButtons isSignedIn={isSignedIn} playSound={playSound} />
       </div>
     </motion.div>
   );

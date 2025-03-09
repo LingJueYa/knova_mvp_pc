@@ -132,11 +132,11 @@ const GlobalSidebar = () => {
               className="min-h-screen w-72" 
               aria-label="main-navigation"
             >
-              <SidebarContent className="p-2 h-full flex flex-col">
+              <SidebarContent className="p-2 h-full flex flex-col dark:bg-secondary">
                 
                 {/* 侧边栏主内容区域 */}
-                <div className="bg-gray-50/80 dark:bg-background rounded-3xl overflow-hidden transition-all duration-300 backdrop-blur-sm h-full">
-                  <div className="bg-white/95 dark:bg-card m-1 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] border border-purple-100/80 dark:border-gray-700/50 overflow-y-auto h-[90%] flex flex-col sidebar-scroll">
+                <div className="bg-gray-50/80 dark:bg-secondary rounded-3xl overflow-hidden transition-all duration-300 backdrop-blur-sm h-full">
+                  <div className="bg-white/95 dark:bg-bg m-1 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] border border-purple-100/80 dark:border-gray-700/50 overflow-y-auto h-[90%] flex flex-col sidebar-scroll">
                   
                   
                     {/* 顶部区域 */}

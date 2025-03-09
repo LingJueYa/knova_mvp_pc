@@ -45,7 +45,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
           {/* 当导航项处于激活状态时显示的动画背景 */}
           {isActive && (
             <motion.div 
-              className="absolute inset-0 bg-white dark:bg-gray-800 border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.1)] rounded-2xl z-0"
+              className="absolute inset-0 bg-white dark:bg-secondary border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.1)] rounded-2xl z-0"
               layoutId="activeItem"
               transition={{ 
                 type: "spring", 
@@ -64,7 +64,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
               "transition-all duration-200 ease-out",
               isActive 
                 ? "text-orange-600 dark:text-orange-400" 
-                : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                : "text-gray-700 hover:text-gray-900 dark:text-primary dark:hover:text-accent-fg"
             )}
             onClick={() => playSound("/music/nav-click.mp3")}
             aria-current={isActive ? "page" : undefined}
@@ -84,7 +84,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
       <TooltipContent 
         side="right" 
         sideOffset={10}
-        className="bg-white/95 dark:bg-gray-800/95 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 shadow-sm rounded-xl px-3 py-1.5"
+        className="bg-white/95 dark:bg-bg text-gray-800 dark:text-primary border border-gray-100 dark:border-gray-700 shadow-sm rounded-xl px-3 py-1.5"
       >
         {tooltipText}
       </TooltipContent>

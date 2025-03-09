@@ -63,14 +63,14 @@ export function CreateBotButton({
         variant="outline"
         disabled={isLimitReached}
         className={cn(
-          "relative overflow-hidden w-full bg-white dark:bg-gray-800 border-[#e1e1e1] dark:border-gray-700 text-[#1d1d1f] dark:text-gray-200",
+          "relative overflow-hidden w-full bg-white dark:bg-secondary border-[#e1e1e1] dark:border-gray-700 text-[#1d1d1f] dark:text-primary",
           "px-5 py-2.5 h-10 rounded-full tracking-wide font-medium text-sm",
           "transition-all duration-300 ease-out",
           "shadow-[0_0_0_rgba(0,0,0,0)]",
           "hover:bg-[#f5f5f7] dark:hover:bg-gray-700 hover:border-[#d2d2d7] dark:hover:border-gray-600 hover:shadow-[0_2px_5px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_2px_5px_rgba(0,0,0,0.2)]",
           "active:scale-[0.98] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,0.3)]",
-          isHovered && !isLimitReached && "bg-[#f5f5f7] dark:bg-gray-700 border-[#d2d2d7] dark:border-gray-600",
-          isPressed && !isLimitReached && "scale-[0.98] bg-[#f0f0f2] dark:bg-gray-700/90",
+          isHovered && !isLimitReached && "bg-[#f5f5f7] dark:bg-gray-800 border-[#d2d2d7] dark:border-gray-600",
+          isPressed && !isLimitReached && "scale-[0.98] bg-[#f0f0f2] dark:bg-gray-800/90",
           isLimitReached && "opacity-60 cursor-not-allowed hover:bg-white dark:hover:bg-gray-800 hover:border-[#e1e1e1] dark:hover:border-gray-700 hover:shadow-none active:scale-100"
         )}
         onMouseEnter={() => !isLimitReached && setIsHovered(true)}

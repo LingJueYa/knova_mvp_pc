@@ -90,30 +90,30 @@
   /* 深色模式变量 */
   .dark {
     /* 主题色 */
-    --bg: 0 0% 0%;
-    --fg: 223.81 0% 98%;
+    --bg: 0 0% 10%; /* #1a1a1a */
+    --fg: 0 0% 88%; /* #e0e0e0 */
     
     /* 主要颜色 */
-    --primary: 60 9.1% 97.8%;
+    --primary: 0 0% 88%; /* #e0e0e0 */
     --primary-fg: 0 0% 100%;
     --primary-foreground: 24 9.8% 10%;
     --primary-chart: 221.19 83% 53%;
     
     /* 次要颜色 */
-    --secondary: 12 6.5% 15.1%;
-    --secondary-fg: 223.81 0% 98%;
-    --secondary-foreground: 60 9.1% 97.8%;
+    --secondary: 0 0% 18%; /* #2d2d2d */
+    --secondary-fg: 0 0% 88%; /* #e0e0e0 */
+    --secondary-foreground: 0 0% 88%; /* #e0e0e0 */
     --secondary-chart: 211.99 95% 68%;
     
     /* 第三级颜色 */
-    --tertiary: 240.02 10% 6%;
-    --tertiary-fg: 239.99 4% 96%;
+    --tertiary: 0 0% 10%; /* #1a1a1a */
+    --tertiary-fg: 0 0% 88%; /* #e0e0e0 */
     --tertiary-chart: 216.01 92% 60%;
     
     /* 强调色 */
-    --accent: 12 6.5% 15.1%;
-    --accent-fg: 0 0% 100%;
-    --accent-foreground: 60 9.1% 97.8%;
+    --accent: 0 0% 18%; /* #2d2d2d */
+    --accent-fg: 0 0% 100%; /* #ffffff */
+    --accent-foreground: 0 0% 88%; /* #e0e0e0 */
     --accent-subtle: 215.99 94% 6%;
     --accent-subtle-fg: 204.92 100% 77%;
     --accent-chart: 212 96% 87%;
@@ -127,25 +127,25 @@
     --destructive-foreground: 60 9.1% 97.8%;
     
     /* 界面元素 */
-    --border: 12 6.5% 15.1%;
-    --input: 12 6.5% 15.1%;
-    --ring: 24 5.7% 82.9%;
-    --toggle: 239.99 5% 26%;
-    --muted: 12 6.5% 15.1%;
-    --muted-fg: 240 5.03% 64.9%;
-    --muted-foreground: 24 5.4% 63.9%;
+    --border: 0 0% 18%; /* #2d2d2d */
+    --input: 0 0% 18%; /* #2d2d2d */
+    --ring: 0 0% 88%; /* #e0e0e0 */
+    --toggle: 0 0% 18%; /* #2d2d2d */
+    --muted: 0 0% 18%; /* #2d2d2d */
+    --muted-fg: 0 0% 46%; /* #757575 */
+    --muted-foreground: 0 0% 46%; /* #757575 */
     
     /* 背景和前景 */
-    --background: 20 14.3% 4.1%;
-    --foreground: 60 9.1% 97.8%;
-    --overlay: 240.03 6% 6%;
-    --overlay-fg: 223.81 0% 98%;
+    --background: 0 0% 10%; /* #1a1a1a */
+    --foreground: 0 0% 88%; /* #e0e0e0 */
+    --overlay: 0 0% 10%; /* #1a1a1a */
+    --overlay-fg: 0 0% 88%; /* #e0e0e0 */
     
     /* 卡片和弹出框 */
-    --card: 20 14.3% 4.1%;
-    --card-foreground: 60 9.1% 97.8%;
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
+    --card: 0 0% 18%; /* #2d2d2d */
+    --card-foreground: 0 0% 88%; /* #e0e0e0 */
+    --popover: 0 0% 18%; /* #2d2d2d */
+    --popover-foreground: 0 0% 88%; /* #e0e0e0 */
     
     /* 图表颜色 */
     --chart-1: 220 70% 50%;
@@ -153,13 +153,13 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-background: 0 0% 10%; /* #1a1a1a */
+    --sidebar-foreground: 0 0% 88%; /* #e0e0e0 */
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-accent: 0 0% 18%; /* #2d2d2d */
+    --sidebar-accent-foreground: 0 0% 88%; /* #e0e0e0 */
+    --sidebar-border: 0 0% 18%; /* #2d2d2d */
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 

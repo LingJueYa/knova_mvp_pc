@@ -2,10 +2,12 @@
 // 登录按钮组件 - Apple风格设计
 
 import { SignInButton, UserButton } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Button } from "@/components/ui/button";
 import { Login } from "@/components/icons/Login";
 import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 // 音效播放函数
 const useSound = () => {
@@ -92,6 +94,8 @@ export function CustomSignInButton() {
 
 export function CustomUserButton() {
   const { playSound } = useSound();
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === 'dark';
   
   return (
     <div 
@@ -101,10 +105,19 @@ export function CustomUserButton() {
       <UserButton
         userProfileMode="modal"
         appearance={{
+          baseTheme: isDarkMode ? dark : undefined,
           elements: {
             avatarBox: "w-8 h-8",
             badge: "hidden",
+            userButtonPopoverCard: isDarkMode ? "bg-background border-border" : "",
+            userButtonPopoverActionButton: isDarkMode ? "text-foreground hover:bg-muted" : "",
+            userButtonPopoverActionButtonIcon: isDarkMode ? "text-foreground" : "",
+            userButtonPopoverFooter: isDarkMode ? "bg-background" : "",
           },
+          variables: {
+            colorBackground: isDarkMode ? "#333333" : "#ffffff",
+            colorText: isDarkMode ? "#F8FAFC" : "#0F172A",
+          }
         }}
       />
     </div>
