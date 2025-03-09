@@ -158,10 +158,7 @@ const GlobalSidebar = () => {
                     <SectionTitle title="My Bots" />
                     
                     {/* 我的 Bots 创建按钮 */}
-                    <CreateBotButton 
-                      currentBotCount={mockBots.length}
-                      onCreateBot={() => {}}
-                    />
+                    <CreateBotButton />
 
                     {/* 我的 Bots 列表区域 */}
                     <MenuSection 

@@ -13,6 +13,8 @@ import { APP_VERSION } from "@/config/version";
 import { cn } from "@/lib/utils";
 import "@/styles/global.css";
 
+import { CreateBotDialog } from "@/components/bot/CreateBotDialog";
+
 interface RootLayoutProps {
   children: React.ReactNode;
 }
@@ -136,6 +138,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </main>
                 </div>
               </div>
+              
+              {/* 全局创建Bot弹窗 */}
+              <CreateBotDialog />
             </SplashScreenWrapper>
           </ClerkThemeProvider>
         </ThemeProvider>
