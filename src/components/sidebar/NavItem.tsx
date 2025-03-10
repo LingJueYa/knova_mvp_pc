@@ -41,14 +41,17 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
           {/* 当导航项处于激活状态时显示的动画背景 */}
           {isActive && (
             <motion.div 
-              className="absolute inset-0 bg-white dark:bg-secondary border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.1)] rounded-2xl z-0"
+              className="absolute inset-0 bg-white/95 dark:bg-secondary/95 border-[0.5px] border-orange-100 dark:border-orange-500/20 shadow-[0_2px_12px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[2px] rounded-2xl z-0"
               layoutId="activeItem"
               transition={{ 
                 type: "spring", 
-                stiffness: 320, 
-                damping: 30, 
+                stiffness: 350, 
+                damping: 32, 
+                mass: 0.9,
                 duration: 0.2
               }}
+              initial={{ opacity: 0.8, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
             />
           )}
           
@@ -57,7 +60,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
             href={item.href}
             className={cn(
               "flex items-center gap-2 px-3 py-2.5 text-base font-medium tracking-wider rounded-xl z-10 relative",
-              "transition-all duration-200 ease-out",
+              "transition-all duration-300 ease-out",
               isActive 
                 ? "text-orange-600 dark:text-orange-400" 
                 : "text-gray-700 hover:text-gray-900 dark:text-primary dark:hover:text-accent-fg"
@@ -66,12 +69,16 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
             aria-current={isActive ? "page" : undefined}
           >
             {/* 导航图标 */}
-            <span className="flex-shrink-0 w-6 h-6">
+            <motion.span 
+              className="flex-shrink-0 w-6 h-6"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
               {sidebarRenderIcon(item.icon, isActive)}
-            </span>
+            </motion.span>
             
             {/* 导航文本 */}
-            <span className="pt-0.5 font-semibold">{item.label}</span>
+            <span className="pt-0.5 font-semibold tracking-wide">{item.label}</span>
           </Link>
         </SidebarMenuItem>
       </TooltipTrigger>
@@ -80,7 +87,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
       <TooltipContent 
         side="right" 
         sideOffset={10}
-        className="bg-white/95 dark:bg-bg text-gray-800 dark:text-primary border border-gray-100 dark:border-gray-700 shadow-sm rounded-xl px-3 py-1.5"
+        className="bg-white/95 dark:bg-bg/95 text-gray-800 dark:text-primary border-[0.5px] border-gray-100 dark:border-gray-700 shadow-sm backdrop-blur-sm rounded-xl px-3 py-1.5"
       >
         {tooltipText}
       </TooltipContent>

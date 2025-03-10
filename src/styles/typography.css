@@ -1,0 +1,103 @@
+/* 
+ * Typography Enhancement CSS
+ * Inspired by Apple's design philosophy focusing on readability and elegance
+ */
+
+/* Base Typography Improvements */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+}
+
+/* Article Typography */
+.article-heading {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.article-subheading {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.article-body {
+  font-size: 17px;
+  line-height: 1.6;
+  letter-spacing: 0.002em;
+}
+
+/* Enhanced paragraph spacing for readability */
+.article-content p {
+  margin-bottom: 1.2em;
+}
+
+/* Improved link styling */
+.article-content a {
+  text-decoration: none;
+  color: #0066cc;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.article-content a:hover {
+  color: #004499;
+  border-bottom: 1px solid currentColor;
+}
+
+/* Quotes with Apple-style design */
+.article-content blockquote {
+  font-size: 1.1em;
+  line-height: 1.5;
+  font-weight: 300;
+  border-left: 2px solid #dadada;
+  margin-left: 0;
+  padding-left: 1.5rem;
+  font-style: italic;
+  color: #555;
+}
+
+/* Lists with proper spacing */
+.article-content ul, 
+.article-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast improvements */
+@media (prefers-contrast: more) {
+  .article-content {
+    color: #000;
+    background: #fff;
+  }
+  
+  .article-content a {
+    color: #0000EE;
+    text-decoration: underline;
+  }
+}
+
+/* Focus state enhancements for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+  border-radius: 2px;
+}

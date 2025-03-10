@@ -38,14 +38,17 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
       {/* 当机器人项处于激活状态时显示的动画背景 */}
       {isActive && (
         <motion.div 
-          className="absolute inset-0 bg-white dark:bg-gray-800 border border-orange-100 dark:border-orange-500/20 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.15)] rounded-2xl z-0"
+          className="absolute inset-0 bg-white/95 dark:bg-gray-800/95 border-[0.5px] border-orange-100 dark:border-orange-500/20 shadow-[0_2px_12px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.15)] backdrop-blur-[2px] rounded-2xl z-0"
           layoutId="activeItem"
           transition={{ 
             type: "spring", 
-            stiffness: 300,
-            damping: 30,
-            mass: 1
+            stiffness: 350,
+            damping: 32,
+            mass: 0.9,
+            duration: 0.2
           }}
+          initial={{ opacity: 0.8, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
         />
       )}
       {/* 机器人链接 */}
@@ -61,13 +64,26 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
           isActive={isActive}
           className={`flex items-center gap-2 px-5 py-5 rounded-2xl w-full ${isActive 
             ? '!bg-transparent' 
-            : 'hover:bg-gray-50/70 dark:hover:bg-gray-700/40 active:bg-gray-100/50 dark:active:bg-gray-700/60 transition-all duration-200'}`}
+            : 'hover:bg-gray-50/80 dark:hover:bg-gray-700/40 active:bg-gray-100/60 dark:active:bg-gray-700/60 transition-all duration-300'}`}
         >
           {/* 头像容器 */}
-          <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative">
+          <motion.span 
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative"
+            whileHover={{ scale: 1.04 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
             {/* 新消息指示器 */}
             {hasNewMessage && (
-              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#55b685] dark:bg-[#6ece9a] rounded-full z-10 shadow-[0_0_4px_rgba(85,182,133,0.2)] dark:shadow-[0_0_4px_rgba(110,206,154,0.4)]" />
+              <motion.span 
+                className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#55b685] dark:bg-[#6ece9a] rounded-full z-10 shadow-[0_0_6px_rgba(85,182,133,0.3)] dark:shadow-[0_0_6px_rgba(110,206,154,0.5)]"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: [0.8, 1.2, 0.8] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2,
+                  ease: "easeInOut"
+                }}
+              />
             )}
             
             {/* 头像图片容器 */}
@@ -80,16 +96,16 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
                 sizes="40px"
                 className={cn(
                   avatarClassName,
-                  "transition-all duration-300"
+                  "transition-all duration-300 shadow-sm"
                 )}
               />
             </div>
-          </span>
+          </motion.span>
           
           {/* 机器人名称和状态 */}
           <div className="flex items-center gap-2">
             <span 
-              className={`font-semibold text-[16px] transition-all duration-200 tracking-widest ${
+              className={`font-semibold text-[16px] transition-all duration-300 tracking-widest ${
                 isActive 
                   ? 'text-gray-900 dark:text-gray-100' 
                   : 'text-gray-700 dark:text-gray-300'
@@ -100,7 +116,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
             
             {/* Busy 状态标签 */}
             {status === "busy" && (
-              <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-white text-orange-500 border border-orange-400 tracking-wider dark:bg-white">
+              <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-white text-orange-500 border-[0.5px] border-orange-400 tracking-wider dark:bg-white shadow-sm">
                 Busy
               </span>
             )}
@@ -111,4 +127,4 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
   );
 };
 
-export default BotItem; 
+export default BotItem;
