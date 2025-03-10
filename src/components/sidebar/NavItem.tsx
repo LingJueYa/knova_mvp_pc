@@ -71,7 +71,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
             </span>
             
             {/* 导航文本 */}
-            <span className="pt-0.5">{item.label}</span>
+            <span className="pt-0.5 font-semibold">{item.label}</span>
           </Link>
         </SidebarMenuItem>
       </TooltipTrigger>

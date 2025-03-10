@@ -87,43 +87,6 @@ const GlobalSidebar = () => {
         variants={fadeInVariants}
         className="h-full"
       >
-        {/* 全局CSS样式定义 */}
-        <style jsx global>{`
-          /* 深色模式侧边栏优化 */
-          @media (prefers-color-scheme: dark) {
-            .sidebar-scroll {
-              scrollbar-color: rgba(75, 85, 99, 0.5) rgba(31, 41, 55, 0.1);
-            }
-            
-            .sidebar-scroll::-webkit-scrollbar-track {
-              background-color: rgba(31, 41, 55, 0.1);
-            }
-            
-            .sidebar-scroll::-webkit-scrollbar-thumb {
-              background-color: rgba(75, 85, 99, 0.5);
-              border-radius: 6px;
-            }
-          }
-          
-          /* @keyframes subtle-pulse {
-            0% {
-              filter: drop-shadow(0 0 0.5px rgba(253, 161, 114, 0));
-              transform: scale(1.05) rotate(1deg);
-            }
-            50% {
-              filter: drop-shadow(0 0 2px rgba(253, 161, 114, 0.3));
-              transform: scale(1.08) rotate(1.5deg);
-            }
-            100% {
-              filter: drop-shadow(0 0 0.5px rgba(253, 161, 114, 0));
-              transform: scale(1.05) rotate(1deg);
-            }
-          }
-          
-          .animate-subtle-pulse {
-            animation: subtle-pulse 3s ease-in-out infinite;
-          } */
-        `}</style>
 
         {/* 侧边栏主框架 */}
         <TooltipProvider>
@@ -132,11 +95,10 @@ const GlobalSidebar = () => {
               className="min-h-screen w-72" 
               aria-label="main-navigation"
             >
-              <SidebarContent className="p-2 h-full flex flex-col dark:bg-secondary">
+              <SidebarContent className="h-full flex flex-col dark:bg-secondary">
                 
                 {/* 侧边栏主内容区域 */}
-                <div className="bg-gray-50/80 dark:bg-secondary rounded-3xl overflow-hidden transition-all duration-300 backdrop-blur-sm h-full">
-                  <div className="bg-white/95 dark:bg-bg m-1 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] border border-purple-100/80 dark:border-gray-700/50 overflow-y-auto h-[91%] flex flex-col sidebar-scroll">
+                  <div className="bg-white dark:bg-bg border-r border-[#F0F0F0] dark:border-gray-700/50 overflow-y-auto h-full flex flex-col sidebar-scroll transition-all duration-300">
                   
                   
                     {/* 顶部区域 */}
@@ -194,7 +156,6 @@ const GlobalSidebar = () => {
                       pathname={pathname}
                       playSound={playSound}
                     />
-                  </div>
                   
                   {/* 社交链接区域 */}
                   <motion.div 

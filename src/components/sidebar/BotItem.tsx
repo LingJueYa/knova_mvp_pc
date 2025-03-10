@@ -89,7 +89,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
           {/* 机器人名称和状态 */}
           <div className="flex items-center gap-2">
             <span 
-              className={`font-medium text-[16px] transition-all duration-200 tracking-widest ${
+              className={`font-semibold text-[16px] transition-all duration-200 tracking-widest ${
                 isActive 
                   ? 'text-gray-900 dark:text-gray-100' 
                   : 'text-gray-700 dark:text-gray-300'

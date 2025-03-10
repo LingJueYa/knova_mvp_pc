@@ -108,7 +108,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
@@ -121,16 +121,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 role="main"
               >
                 {/* 侧边栏区域 */}
-                <aside role="complementary" aria-label="sidebar-navigation">
+                <aside role="complementary" aria-label="sidebar-navigation" className="w-72">
                   <Sidebar />
                 </aside>
                 
                 {/* 内容区域容器 */}
-                <div className="flex-1 flex flex-col overflow-hidden px-4 sm:px-6 md:px-8">
+                <div className="flex-1 flex flex-col overflow-y-auto">
                   
                   {/* 主内容区域 */}
                   <main 
-                    className="h-[calc(100vh-56px)] max-w-screen-2xl w-full mx-auto overflow-hidden scrollbar-elegant"
+                    className="max-w-screen-2xl w-full h-fit min-h-screen mx-auto overflow-y-auto scrollbar-elegant"
                     role="main"
                     aria-label="main-content-area"
                   >
