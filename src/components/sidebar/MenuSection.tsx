@@ -1,3 +1,8 @@
+/**
+ * 侧边栏菜单区块组件
+ * 根据itemType渲染不同类型的菜单项(导航项或机器人项)
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 import { SidebarMenu } from "@/components/ui/sidebar";
@@ -35,10 +40,7 @@ interface BotMenuSectionProps {
 // 联合类型，使组件可以处理两种不同类型的菜单项
 type MenuSectionProps = NavMenuSectionProps | BotMenuSectionProps;
 
-/**
- * 侧边栏菜单区块组件
- * 根据itemType渲染不同类型的菜单项(导航项或机器人项)
- */
+
 const MenuSection = (props: MenuSectionProps) => {
   const { items, itemType, label, className = "py-4 px-3", pathname, playSound } = props;
   
@@ -53,7 +55,7 @@ const MenuSection = (props: MenuSectionProps) => {
           custom={index}
           initial="hidden"
           animate="visible"
-          variants={itemVariants}  // 应用预定义的动画变体
+          variants={itemVariants}
         >
           {itemType === 'nav' ? (
             // 渲染导航类型项目

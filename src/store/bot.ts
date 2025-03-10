@@ -1,6 +1,6 @@
 /**
  * Bot 全局状态管理
- * 使用 valtio 进行状态管理
+ * TODO：待定方案
  */
 
 import { proxy, useSnapshot } from 'valtio';

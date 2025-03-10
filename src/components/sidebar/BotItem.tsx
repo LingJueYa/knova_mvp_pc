@@ -1,6 +1,5 @@
 /**
  * 侧边栏机器人项组件
- * 用于展示可点击的机器人选项，支持激活状态、头像显示和动画效果
  */
 
 import React from "react";
@@ -24,10 +23,6 @@ interface BotItemProps {
   playSound: (path: string) => void; // 播放音效的回调函数
 }
 
-/**
- * 机器人项组件
- * 渲染侧边栏中的单个机器人项，包含头像、名称及激活状态动画效果
- */
 const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
   const { name, avatarUrl, href, status, hasNewMessage } = bot;
 

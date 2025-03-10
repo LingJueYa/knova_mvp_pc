@@ -1,6 +1,5 @@
 /**
  * 标准导航项组件
- * 用于在侧边栏中展示可点击的导航选项，支持激活状态、动画效果和工具提示
  */
 
 import React from "react";
@@ -29,10 +28,7 @@ interface NavItemProps {
   playSound: (path: string) => void; // 播放音效的回调函数
 }
 
-/**
- * 导航项组件
- * 渲染侧边栏中的单个导航项，包含图标、文本标签及激活状态动画效果
- */
+
 const NavItem: React.FC<NavItemProps> = ({ item, isActive, playSound }) => {
   // 使用项目的tooltip属性，如果没有则使用label作为提示文本
   const tooltipText = item.tooltip || item.label;

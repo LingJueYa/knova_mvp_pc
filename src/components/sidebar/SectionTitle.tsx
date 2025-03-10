@@ -1,5 +1,5 @@
 /**
- * 侧边栏区域标题组件
+ * 分割线标题组件
  * 用于显示侧边栏中各个区域的标题，包含文本和分隔线，支持淡入动画效果
  */
 
@@ -15,19 +15,15 @@ interface SectionTitleProps {
   className?: string; // 可选的自定义CSS类名
 }
 
-/**
- * 区域标题组件
- * 渲染带有淡入动画效果的标题和横向分隔线
- */
 const SectionTitle = ({ title, className = "px-6 pb-3" }: SectionTitleProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}  // 初始状态为透明
-      animate={{ opacity: 1 }}  // 动画最终状态为完全不透明
-      transition={{ delay: 0.3, duration: 0.5 }}  // 延迟0.3秒后开始，持续0.5秒
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3, duration: 0.5 }}
       className={className} 
-      role="separator"  // 语义化角色：分隔符
-      aria-orientation="horizontal"  // 无障碍属性：水平方向
+      role="separator"
+      aria-orientation="horizontal" 
     >
       <div className="flex items-center">
         {/* 标题文本 */}
