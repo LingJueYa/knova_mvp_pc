@@ -1,18 +1,18 @@
 export interface BotsContent {
     id: string;
-    conclusion: string; // 一句话结论
+    title: string; // 一句话结论
+    content?: string; // 完整文章内容
     url: string; // 详情文章链接
     botId: string; // 机器人ID
     botName: string; // 机器人名称
     botAvatarUrl: string; // 机器人头像
     tags: string[]; // 标签
     grade: 'low' | 'medium' | 'high'; // 重要等级
-    isChart: boolean; // 是否为图表
-    isTimeline?: boolean; // 是否为时间线类型
-    imageUrl: string; // 图片链接 [ IF isChart = false ]
-    chartData?: string[]; // 图表数据 [ IF isChart = true ]
-    timelineEvents?: TimelineEvent[]; // 时间线事件 [ IF isTimeline = true ]
+    cardType: 'image' | 'text' | 'timeline'; // 卡片类型
+    imageUrl?: string; // 图片链接 [ IF cardType = 'image' ]
+    timelineEvents?: TimelineEvent[]; // 时间线事件 [ IF cardType = 'timeline' ]
     createdAt: string; // 创建时间
+    isFollowed?: boolean; // 是否已关注
 }
 
 // 时间线事件结构

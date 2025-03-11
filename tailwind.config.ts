@@ -14,6 +14,11 @@ const config = withTV({
           '0%': { borderColor: 'transparent', transform: 'scale(0.95)' },
           '50%': { borderWidth: '3px' },
           '100%': { transform: 'scale(1)' }
+        },
+        'gradient-shift': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' }
         }
       },
   		colors: {
@@ -117,7 +122,8 @@ const config = withTV({
   			]
   		},
       animation: {
-        'border-slide': 'border-slide 0.5s ease-out forwards'
+        'border-slide': 'border-slide 0.5s ease-out forwards',
+        'gradient-slow': 'gradient-shift 8s ease infinite'
       }
   	}
   },

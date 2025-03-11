@@ -1,16 +1,17 @@
 "use client";
 
-import React, { memo, useRef } from 'react';
-import Link from 'next/link';
+import React, { memo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, useTransform, useScroll } from 'framer-motion';
+import { motion, useTransform, useScroll, AnimatePresence } from 'framer-motion';
 import { BotsContent } from '@/types/bots';
+import { Heart, MessageCircle, Share2, Bookmark } from 'lucide-react';
 
 // 扩展 BotsContent 类型，增加 isFollowed 属性
 interface ArticleCardProps {
   article: BotsContent & { 
     isFollowed?: boolean;
     summary?: string; // 添加可选的summary属性
+    cardType?: 'image' | 'text' | 'timeline'; // 添加cardType属性
     isTimeline?: boolean;
     timelineEvents?: {
       id: string;
@@ -19,144 +20,119 @@ interface ArticleCardProps {
       timestamp: string;
       iconType?: 'milestone' | 'release' | 'update';
     }[];
+    engagement?: {
+      likes?: number;
+      comments?: number;
+      shares?: number;
+      isLiked?: boolean;
+      isBookmarked?: boolean;
+    };
   };
+  onLike?: (id: string) => void;
+  onComment?: (id: string) => void;
+  onShare?: (id: string) => void;
+  onBookmark?: (id: string) => void;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
-  // ----- 映射与常量 -----
+// 格式化日期函数
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
   
-  // 根据grade值映射显示的文本标签
-  const gradeTextMap: Record<string, string> = {
-    low: 'Low',
-    medium: 'Medium',
-    high: 'High'
-  };
+  // 计算时间差（毫秒）
+  const diffInMs = now.getTime() - date.getTime();
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   
-  // 根据grade值映射颜色
-  const gradeColorMap: Record<string, { bg: string, text: string, shadow: string }> = {
-    low: {
-      bg: 'bg-green-50 dark:bg-green-900/20',
-      text: 'text-green-600 dark:text-green-400',
-      shadow: 'shadow-green-500/20'
-    },
-    medium: {
-      bg: 'bg-yellow-50 dark:bg-yellow-900/20',
-      text: 'text-yellow-600 dark:text-yellow-400',
-      shadow: 'shadow-yellow-500/20'
-    },
-    high: {
-      bg: 'bg-red-50 dark:bg-red-900/20',
-      text: 'text-red-600 dark:text-red-400',
-      shadow: 'shadow-red-500/20'
+  if (diffInDays < 1) {
+    // 不到一天，显示 xx h xx m ago
+    const hours = diffInHours;
+    const minutes = diffInMinutes - (diffInHours * 60);
+    
+    if (hours === 0) {
+      return `${minutes} m ago`;
+    } else if (minutes === 0) {
+      return `${hours} h ago`;
+    } else {
+      return `${hours} h ${minutes} m ago`;
     }
-  };
+  } else if (diffInDays < 7) {
+    // 1-7天内，显示 xx d ago
+    return `${diffInDays} d ago`;
+  } else {
+    // 超过一周，显示完整日期（使用美国标准格式）
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+};
+
+// 格式化时间线日期函数
+const formatTimelineDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric',
+    month: 'short', 
+    day: 'numeric'
+  });
+};
+
+const ArticleCard: React.FC<ArticleCardProps> = ({ article, onLike, onComment, onShare, onBookmark }) => {
+  // 状态控制
+  const [isExpanded, setIsExpanded] = useState(false);
+  // 添加图片加载状态
+  const [imageError, setImageError] = useState(false);
+  // 添加社交互动状态
+  const [isLiked, setIsLiked] = useState(article.engagement?.isLiked ?? false);
+  const [isBookmarked, setIsBookmarked] = useState(article.engagement?.isBookmarked ?? false);
+  const [likes, setLikes] = useState(article.engagement?.likes ?? 0);
+  const [comments, setComments] = useState(article.engagement?.comments ?? 0);
+  const [shares, setShares] = useState(article.engagement?.shares ?? 0);
   
-  // ----- 计算派生值 -----
-  
-  const gradeText = gradeTextMap[article.grade.toLowerCase()] || 'Low';
-  const gradeColor = gradeColorMap[article.grade.toLowerCase()] || {
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    text: 'text-blue-600 dark:text-blue-400',
-    shadow: 'shadow-blue-500/20'
-  };
-  
-  // 检查是否有图片
-  const hasImage = article.imageUrl && article.imageUrl.trim() !== '';
-  
-  // 检查是否为时间线类型
-  const isTimeline = article.isTimeline && article.timelineEvents && article.timelineEvents.length > 0;
-  
-  // ----- 引用与动画控制 -----
-  
-  // 时间线滚动控制
+  // ----- Refs & 辅助变量 -----
   const timelineContainerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container: timelineContainerRef });
-  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0.5, 1, 1, 0.5]);
+  const { scrollYProgress } = useScroll({
+    container: timelineContainerRef
+  });
   
-  // Card variants based on if it has image or not
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [1, 0, 0, 1]);
+  
+  // 卡片类型辅助变量
+  const hasImage = article.cardType === 'image' && !!article.imageUrl;
+  const isTimeline = article.cardType === 'timeline';
+  
+  // ----- 动画相关配置 -----
   const cardVariants = {
     initial: { 
-      opacity: 0, 
-      y: 15,
+      scale: 1,
+      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)"
     },
-    animate: { 
-      opacity: 1, 
-      y: 0,
+    hover: { 
+      scale: 1.01,
+      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03)"
+    },
+    tap: { 
+      scale: 0.99 
+    },
+    animate: {
+      scale: 1,
       transition: {
-        duration: 0.4,
-        ease: [0.25, 1, 0.5, 1],
+        type: "spring",
+        stiffness: 350,
+        damping: 25
       }
-    },
-    hover: {
-      scale: 0.985,
-      y: -3,
-      boxShadow: '0 14px 30px -8px rgba(0, 0, 0, 0.1)',
-      transition: {
-        duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
-      }
-    },
-    tap: {
-      scale: 0.96,
     }
   };
-  
-  // ----- 辅助函数 -----
-  
-  // 根据grade返回对应的SVG图标
-  const getGradeIcon = (grade: string) => {
-    const lowerGrade = grade.toLowerCase();
-    
-    switch(lowerGrade) {
-      case 'low':
-        return (
-          <Image src="/svg/low.svg" alt="Low" width={16} height={16} className='mr-1.5'/>
-        );
-      case 'medium':
-        return (
-          <Image src="/svg/medium.svg" alt="Medium" width={16} height={16} className='mr-1.5'/>
-        );
-      case 'high':
-        return (
-          <Image src="/svg/high.svg" alt="High" width={16} height={16} className='mr-1.5'/>
-        );
-      default:
-        return null;
-    }
-  };
-  
-  // 格式化日期
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-  };
-  
-  // 格式化时间线时间戳（精确到小时，如果无小时则截止到天）
-  const formatTimelineDate = (dateString: string) => {
-    const date = new Date(dateString);
-    // 检查时间是否为午夜整点，如果是则视为无具体小时
-    const isStartOfDay = date.getHours() === 0 && date.getMinutes() === 0 && date.getSeconds() === 0;
-    
-    const options: Intl.DateTimeFormatOptions = isStartOfDay 
-      ? { month: 'short', day: 'numeric', year: 'numeric' }
-      : { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-      
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-  };
-  
-  // 根据是否为high grade来决定边框样式
-  const cardBorderStyle = () => {
-    if (article.grade.toLowerCase() === 'high') {
-      return 'border-2 border-red-400 dark:border-red-500/60 ring-1 ring-red-400 dark:ring-red-500/60';
-    }
-    return 'border-gray-100 dark:border-gray-800';
+
+  // 处理卡片点击
+  const handleCardClick = () => {
+    setIsExpanded(!isExpanded);
   };
   
   // ----- 渲染辅助组件 -----
@@ -166,7 +142,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     if (!isTimeline) return null;
     
     return (
-      <div className="relative h-72 overflow-hidden">
+      <div className={`relative ${isExpanded ? "h-96" : "h-64"} overflow-hidden transition-all duration-300`}>
         <div className="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-gray-50 to-transparent h-10 z-10 pointer-events-none dark:from-gray-900" />
         <motion.div 
           style={{ opacity }}
@@ -177,7 +153,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           ref={timelineContainerRef}
           className="h-full overflow-y-auto px-4 py-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-700 dark:hover:scrollbar-thumb-gray-600"
         >
-          <div className="relative ml-4 border-l-2 border-gray-200 dark:border-gray-800 pb-2 pt-4">
+          <div className="relative ml-4 border-l-2 border-gray-200 dark:border-gray-800 rounded-b-lg pb-2 pt-4">
             {article.timelineEvents?.map((event, index) => (
               <motion.div 
                 key={event.id}
@@ -201,7 +177,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                     {event.iconType === 'milestone' ? (
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
                         className="w-5 h-5 text-orange-500 dark:text-orange-400">
-                        <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M10.788 3.21c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
                       </svg>
                     ) : event.iconType === 'release' ? (
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
@@ -211,7 +187,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                     ) : event.iconType === 'update' ? (
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
                         className="w-5 h-5 text-purple-500 dark:text-purple-400">
-                        <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clipRule="evenodd" />
                       </svg>
                     ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
@@ -222,18 +198,18 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                   </span>
                   <div className="pl-5 pr-2">
                     <motion.div 
-                      className="flex items-center text-sm font-semibold text-gray-900 dark:text-white mb-1"
+                      className="flex items-center text-sm md:text-base font-semibold text-gray-900 dark:text-white mb-1"
                       whileHover={{ x: 3 }}
                       transition={{ duration: 0.2 }}
                     >
                       {event.title}
                     </motion.div>
                     {event.description && (
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1.5 line-clamp-2">
+                      <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-3 leading-[1.5] line-clamp-2 tracking-wider">
                         {event.description}
                       </p>
                     )}
-                    <time className="text-xs text-gray-500 dark:text-gray-500 font-medium block" dateTime={event.timestamp}>
+                    <time className="text-sm md:text-base text-gray-500 dark:text-gray-500 font-medium block" dateTime={event.timestamp}>
                       {formatTimelineDate(event.timestamp)}
                     </time>
                   </div>
@@ -246,143 +222,265 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     );
   };
   
+  // 渲染文章内容（文本或图片卡片）
+  const renderContent = () => {
+    if (isTimeline) return null;
+    
+    return (
+      <AnimatePresence initial={false} mode="wait">
+        {isExpanded ? (
+          <motion.div
+            key="expanded"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ 
+              opacity: { duration: 0.3 },
+              height: { duration: 0.4, ease: [0.33, 1, 0.68, 1] }
+            }}
+            className="relative overflow-hidden"
+          >
+            <motion.div 
+              className="text-sm md:text-base text-gray-700 leading-[1.5] dark:text-gray-300 pt-4 tracking-wider"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {article.content?.split('\n').map((paragraph, index) => (
+                <p key={index} className="mb-5 last:mb-2 leading-[1.5] tracking-wider">
+                  {paragraph}
+                </p>
+              ))}
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="collapsed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative"
+          >
+            <div className="text-sm md:text-base text-gray-700 dark:text-gray-300 line-clamp-3 leading-[1.5] tracking-wider">
+              {article.content}
+            </div>
+            {/* 渐变遮罩效果 */}
+            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
+  
   // ----- 主要渲染部分 -----
   
   return (
-    <Link 
-      className="w-full group h-full"
-      href={article.url}
-      aria-label={`Read article: ${article.conclusion}`}
-    >
+    <div className="w-full flex items-start">
       <motion.div 
-        className={`bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg shadow-gray-200/60 dark:shadow-gray-950/40 flex flex-col border ${cardBorderStyle()} backdrop-blur-sm h-full`}
+        className="w-full bg-white dark:bg-gray-950 rounded-xl px-5 pt-5 pb-2 md:px-6 md:pt-6 md:pb-3 overflow-hidden border border-gray-100 dark:border-gray-900 cursor-pointer group"
         initial="initial"
         animate="animate"
-        whileHover="hover"
-        whileTap="tap"
+        whileHover={!isExpanded ? "hover" : undefined}
+        whileTap={!isExpanded ? "tap" : undefined}
         variants={cardVariants}
+        layout={true}
+        layoutId={`article-card-${article.id}`}
+        onClick={handleCardClick}
       >
-        {/* 条件渲染图片部分 */}
-        {hasImage && !isTimeline && (
-          <div className="relative h-52 sm:h-56 md:h-60 overflow-hidden">
-            <div className="w-full h-full relative">
-              {/* 图片容器 */}
-              <motion.div 
-                className="w-full h-full transform"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-              >
-                <Image 
-                  src={article.imageUrl || '/mock/bot1.jpg'} 
-                  alt={article.conclusion}
+        {/* 条件渲染图片部分 - 仅在有图片卡片 */}
+        {hasImage && (
+          <div className="relative -mx-5 -mt-5 md:-mx-6 md:-mt-6 h-56 mb-6 overflow-hidden">
+            <div className="absolute inset-0">
+              {imageError ? (
+                <div className="w-full h-full bg-gradient-to-br from-orange-50 via-amber-100 to-rose-100 dark:from-orange-950/40 dark:via-amber-900/30 dark:to-rose-900/40 animate-gradient-slow flex items-center justify-center bg-[length:200%_200%]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" 
+                    className="w-10 h-10 text-orange-400/70 dark:text-orange-300/50">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  </svg>
+                </div>
+              ) : (
+                <Image
+                  src={article.imageUrl!}
+                  alt={article.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover will-change-transform"
-                  loading="lazy"
+                  sizes="100vw"
+                  className="object-cover"
+                  priority={article.grade === 'high'}
+                  onError={() => setImageError(true)}
                 />
-              </motion.div>
-              {/* 暗化遮罩层 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-black/10 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 z-10"></div>
+              )}
             </div>
           </div>
         )}
         
-        {/* 时间线渲染 */}
-        {isTimeline && renderTimeline()}
-        
-        {/* 文本内容部分 - 根据是否有图片调整样式 */}
-        <div className={`flex flex-col justify-between ${hasImage && !isTimeline ? 'px-7 py-6' : 'px-8 py-5'} space-y-3 relative flex-grow`}>
-          <article className="flex flex-col justify-between items-start space-y-3">
-            <motion.div 
-              className="flex items-center flex-wrap gap-2 w-full"
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.3 }}
-            >
-              <p className={`text-xs font-medium tracking-wide flex items-center ${gradeColor.text} px-2.5 py-1.5 rounded-full ${gradeColor.bg} shadow-sm ${gradeColor.shadow}`}>
-                {getGradeIcon(article.grade)}
-                <span className="tracking-wider">{gradeText}</span>
-              </p>
+        <div className="w-full">
+          {/* 标签和重要等级 */}
+          <div className="flex justify-between items-center mb-2">
+            {/* 重要等级徽章 */}
+            <div className="flex gap-2 items-center">
+              <span 
+                className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                  ${article.grade === 'high' 
+                    ? 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400' 
+                    : article.grade === 'medium' 
+                      ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-950/30 dark:text-yellow-400' 
+                      : 'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400'
+                  }`}
+              >
+                {article.grade === 'high' ? 'High' : article.grade === 'medium' ? 'Medium' : 'Low'}
+              </span>
               
-              {/* 关注状态标签 */}
+              {/* 关注状态 */}
               {article.isFollowed && (
-                <motion.div 
-                  className="flex items-center text-xs font-medium tracking-wide px-2.5 py-1.5 rounded-full bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 shadow-sm shadow-orange-500/20"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    delay: 0.2,
-                    duration: 0.2,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-3.5 h-3.5 mr-1.5">
-                    <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                  </svg>
-                  Following
-                </motion.div>
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-green-50 text-green-700 text-xs font-medium dark:bg-green-950/30 dark:text-green-400">
+                  Followed
+                </span>
               )}
-            </motion.div>
-            
-            {/* 标题 - 时间线卡片使用更小的标题 */}
-            <motion.h2 
-              className={`${isTimeline 
-                ? 'line-clamp-2 text-base leading-snug sm:text-lg sm:leading-snug' 
-                : hasImage 
-                  ? 'line-clamp-2 text-lg leading-relaxed sm:text-xl sm:leading-relaxed' 
-                  : 'line-clamp-3 text-xl leading-relaxed sm:text-2xl sm:leading-relaxed'} 
-                font-semibold tracking-tight text-gray-900 dark:text-white`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-            >
-              {article.conclusion}
-            </motion.h2>
-            
-            {/* 仅在无图片且非时间线情况下显示简短摘要 (如果存在) */}
-            {!hasImage && !isTimeline && article.summary && (
-              <motion.p
-                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed tracking-wide"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.8 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-              >
-                {article.summary}
-              </motion.p>
-            )}
-          </article>
+            </div>
+          </div>
           
-          {/* 时间和阅读更多部分 - 只在非时间线卡片中显示时间 */}
-          <motion.div
-            className="flex flex-col items-start gap-2 w-full mt-auto pt-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.3 }}
+          {/* 文章标题 */}
+          <motion.h2 
+            className="font-semibold text-base md:text-lg mb-4 leading-snug text-gray-900 dark:text-white"
+            whileHover={{ x: 2 }}
+            transition={{ duration: 0.2 }}
           >
-            {!isTimeline && (
-              <motion.time 
-                dateTime={article.createdAt} 
-                className="block text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-              >
+            {article.title}
+          </motion.h2>
+          
+          {/* 展开内容或内容预览 */}
+          {renderContent()}
+          
+          {/* 时间线内容 */}
+          {renderTimeline()}
+          
+          {/* 作者信息和交互元素 - 使用更精致的布局 */}
+          <div className="flex flex-row items-center justify-between mt-6 border-t border-gray-100 dark:border-gray-900 pt-4">
+            {/* 左侧：Bot名称和时间组合显示 */}
+            <div className="flex flex-col">
+              {/* Bot名称 - 更精致的字体样式 */}
+              <span className="text-sm font-medium text-gray-900 dark:text-white tracking-wide mb-1">
+                {article.botName || 'AI Assistant'}
+              </span>
+              
+              {/* 时间信息 - 更优雅的时间显示 */}
+              <time dateTime={article.createdAt} className="text-xs text-gray-500 dark:text-gray-400 tracking-wider font-light">
                 {formatDate(article.createdAt)}
-              </motion.time>
-            )}
+              </time>
+            </div>
             
-            {/* 添加一个精美的阅读更多指示器 */}
-            <motion.div 
-              className={`text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center opacity-70 group-hover:opacity-100 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300 whitespace-nowrap`}
-              whileHover={{ x: 3 }}
-              transition={{ duration: 0.2 }}
+            {/* 右侧：Read More / Close 按钮 - 更精致的设计 */}
+            <motion.button 
+              onClick={(e) => {
+                e.stopPropagation(); // 防止触发父元素的点击事件
+                setIsExpanded(!isExpanded);
+              }}
+              className={`text-sm font-medium flex items-center px-3 py-1 rounded-full whitespace-nowrap transition-all duration-300 ${
+                isExpanded 
+                  ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' 
+                  : 'bg-gray-50 text-gray-600 dark:bg-gray-900/20 dark:text-gray-300 group-hover:bg-blue-50 group-hover:text-blue-600 dark:group-hover:bg-blue-900/20 dark:group-hover:text-blue-400'
+              }`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ 
+                duration: 0.2,
+                type: "spring",
+                stiffness: 400,
+                damping: 20
+              }}
             >
-              Read more
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5 ml-1 group-hover:translate-x-0.5 transition-transform duration-300">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </motion.div>
-          </motion.div>
+              {isExpanded ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="w-3.5 h-3.5 mr-1.5 transition-transform duration-300">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                  </svg>
+                  <span className="tracking-wide">Close</span>
+                </>
+              ) : (
+                <>
+                  <span className="tracking-wide">Read more</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </>
+              )}
+            </motion.button>
+          </div>
+        </div>
+        
+        {/* 社交互动区域 */}
+        <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-100 dark:border-gray-900">
+          <div className="flex items-center gap-6">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked(!isLiked);
+                setLikes(prev => isLiked ? prev - 1 : prev + 1);
+                onLike?.(article.id);
+              }}
+              className={`flex items-center gap-2 text-sm transition-colors ${
+                isLiked
+                  ? "text-rose-600 dark:text-rose-500"
+                  : "text-gray-500 dark:text-gray-400 hover:text-rose-600 dark:hover:text-rose-500"
+              }`}
+            >
+              <Heart
+                className={`w-4 h-4 transition-all ${
+                  isLiked && "fill-current scale-110"
+                }`}
+              />
+              <span className="text-xs font-medium">{likes}</span>
+            </button>
+            
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setComments(prev => prev + 1);
+                onComment?.(article.id);
+              }}
+              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="text-xs font-medium">{comments}</span>
+            </button>
+            
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShares(prev => prev + 1);
+                onShare?.(article.id);
+              }}
+              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+              <span className="text-xs font-medium">{shares}</span>
+            </button>
+          </div>
+          
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsBookmarked(!isBookmarked);
+              onBookmark?.(article.id);
+            }}
+            className={`p-2 rounded-full transition-all ${
+              isBookmarked 
+                ? "text-amber-500 bg-amber-50 dark:bg-amber-500/10" 
+                : "text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }`}
+          >
+            <Bookmark className={`w-4 h-4 transition-transform ${
+              isBookmarked && "fill-current scale-110"
+            }`} />
+          </button>
         </div>
       </motion.div>
-    </Link>
+    </div>
   );
 };
 
