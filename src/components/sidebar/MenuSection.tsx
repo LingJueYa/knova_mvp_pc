@@ -1,6 +1,6 @@
 /**
  * 侧边栏菜单区块组件
- * 根据itemType渲染不同类型的菜单项(导航项或机器人项)
+ * 根据itemType渲染不同类型的菜单项(导航项 或 Bots 项)
  */
 
 import React from "react";

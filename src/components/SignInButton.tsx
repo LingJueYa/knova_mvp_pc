@@ -1,37 +1,18 @@
 "use client";
-// 登录按钮组件 - Apple风格设计
+// 登录按钮组件
 
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Button } from "@/components/ui/button";
 import { Login } from "@/components/icons/Login";
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { useSidebarSound } from "@/hooks/useSidebarSound";
 
-// 音效播放函数
-const useSound = () => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const playSound = useCallback((soundPath: string) => {
-    if (typeof window !== "undefined") {
-      if (!audioRef.current) {
-        audioRef.current = new Audio(soundPath);
-      } else {
-        audioRef.current.src = soundPath;
-      }
-      
-      audioRef.current.currentTime = 0;
-      audioRef.current.volume = 0.4;
-      audioRef.current.play().catch(err => console.error("音效播放失败:", err));
-    }
-  }, []);
-
-  return { playSound };
-};
 
 export function CustomSignInButton() {
-  const { playSound } = useSound();
+  const { playSound } = useSidebarSound();
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   
@@ -93,7 +74,7 @@ export function CustomSignInButton() {
 }
 
 export function CustomUserButton() {
-  const { playSound } = useSound();
+  const { playSound } = useSidebarSound();
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === 'dark';
   

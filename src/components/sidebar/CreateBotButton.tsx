@@ -1,38 +1,17 @@
 "use client";
 /**
  * 机器人创建按钮组件
- * 集成全局状态管理
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { botActions, useBotStore } from "@/store/bot";
-
-// 音效播放函数
-const useSound = () => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const playSound = useCallback((soundPath: string) => {
-    if (typeof window !== "undefined") {
-      if (!audioRef.current) {
-        audioRef.current = new Audio(soundPath);
-      } else {
-        audioRef.current.src = soundPath;
-      }
-      
-      audioRef.current.currentTime = 0;
-      audioRef.current.volume = 0.4;
-      audioRef.current.play().catch(err => console.error("音效播放失败:", err));
-    }
-  }, []);
-
-  return { playSound };
-};
+import { useSidebarSound } from "@/hooks/useSidebarSound";
 
 export function CreateBotButton() {
-  const { playSound } = useSound();
+  const { playSound } = useSidebarSound();
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   

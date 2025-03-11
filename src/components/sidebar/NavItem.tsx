@@ -23,7 +23,7 @@ import {
  * 导航项组件的属性接口
  */
 interface NavItemProps {
-  item: SidebarItemType;         // 导航项数据，包含标签、图标、链接等信息
+  item: SidebarItemType;
   isActive: boolean;             // 当前项是否处于激活状态
   playSound: (path: string) => void; // 播放音效的回调函数
 }

@@ -11,7 +11,6 @@ import { useTheme } from 'next-themes'
 /**
  * 主题切换器组件
  * 提供系统、亮色和暗色三种主题切换选项
- * 包含完整的标题和描述信息
  */
 export default function ThemeSwitcher({ 
   title = "Appearance", 

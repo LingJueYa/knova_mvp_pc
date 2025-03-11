@@ -14,9 +14,9 @@ export default function Page() {
   const [allContent, setAllContent] = useState<Array<BotsContent & { isFollowed?: boolean }>>([]);
   
   // 模拟数据加载
+  // TODO: 待对接后端
   useEffect(() => {
     const fetchData = async () => {
-      // 真实项目中这里会是实际的 API 请求
       await new Promise(resolve => setTimeout(resolve, 800)); // 模拟网络延迟
       
       // 合并数据，标记关注内容
@@ -47,7 +47,7 @@ export default function Page() {
         />
         
         <div className='px-6 md:px-8 lg:px-10 pb-16'>
-          {/* 所有内容 */}
+          {/* 内容展示 */}
           <motion.section 
             className="mt-6 md:mt-12"
             initial={{ opacity: 0, y: 10 }}

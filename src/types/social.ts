@@ -2,7 +2,7 @@ import { LucideIcon } from "lucide-react";
 import { ComponentType } from "react";
 
 /**
- * 社交媒体项目的基础接口
+ * 社交媒体项基础结构，定义共同属性
  */
 interface SocialItemBase {
   tooltip: string;
@@ -13,23 +13,21 @@ interface SocialItemBase {
 /**
  * Lucide图标社交媒体项
  */
-interface LucideSocialItem extends SocialItemBase {
+export interface LucideSocialItem extends SocialItemBase {
+  type: 'lucide';
   icon: LucideIcon;
-  isLucide: true;
-  isComponent?: false;
 }
 
 /**
  * 自定义组件社交媒体项
  */
-interface ComponentSocialItem extends SocialItemBase {
+export interface ComponentSocialItem extends SocialItemBase {
+  type: 'component';
   icon: ComponentType<{ className?: string }>;
-  isLucide?: false;
-  isComponent: true;
 }
 
 /**
- * 社交媒体项目类型 - 使用判别联合类型
+ * 社交媒体项目类型 - 判别联合类型
  */
 export type SocialItem = LucideSocialItem | ComponentSocialItem;
 
@@ -37,8 +35,6 @@ export type SocialItem = LucideSocialItem | ComponentSocialItem;
  * 社交组件属性接口
  */
 export interface SocialProps {
-  // 可以在这里添加Social组件可能接收的任何属性
-  // 例如：自定义class、额外的社交媒体项等
   className?: string;
   additionalItems?: SocialItem[];
 } 

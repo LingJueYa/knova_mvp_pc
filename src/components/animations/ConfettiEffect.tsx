@@ -1,7 +1,5 @@
 /**
  * 彩带庆祝动画组件
- * 提供苹果风格的轻量级庆祝动画效果
- * 可自定义颜色、持续时间和粒子数量
  */
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
@@ -20,7 +18,6 @@ interface ConfettiEffectProps {
   
   /**
    * 彩带颜色数组
-   * @default 苹果品牌色彩系列
    */
   colors?: string[];
   
@@ -38,7 +35,6 @@ interface ConfettiEffectProps {
 
 /**
  * 彩带庆祝动画效果组件
- * 创建轻量级、符合苹果设计风格的庆祝动画
  */
 export function ConfettiEffect({ 
   play, 
@@ -97,7 +93,6 @@ export function ConfettiEffect({
     // 开始动画
     frame();
     
-    // 清理函数不需要特别处理，因为requestAnimationFrame会在组件卸载时自然停止
   }, [play, duration, colors, particleCount, onComplete]);
   
   // 这个组件不渲染任何可见内容

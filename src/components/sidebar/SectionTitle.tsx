@@ -1,6 +1,5 @@
 /**
  * 分割线标题组件
- * 用于显示侧边栏中各个区域的标题，包含文本和分隔线，支持淡入动画效果
  */
 
 import React from "react";
@@ -12,7 +11,7 @@ import { SidebarSeparator } from "@/components/ui/sidebar";
  */
 interface SectionTitleProps {
   title: string;      // 标题文本内容
-  className?: string; // 可选的自定义CSS类名
+  className?: string;
 }
 
 const SectionTitle = ({ title, className = "px-6 pb-3" }: SectionTitleProps) => {
@@ -29,7 +28,7 @@ const SectionTitle = ({ title, className = "px-6 pb-3" }: SectionTitleProps) => 
         {/* 标题文本 */}
         <span 
           className="text-xs font-semibold text-gray-500 dark:text-primary uppercase tracking-widest" 
-          style={{ fontSize: '11px', letterSpacing: '0.1em' }}  // 精细控制字体大小和字间距
+          style={{ fontSize: '11px', letterSpacing: '0.1em' }}
         >
           {title}
         </span>

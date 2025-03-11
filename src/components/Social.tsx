@@ -20,39 +20,39 @@ const DiscordIcon = dynamic(() => import("@/components/icons/DiscordIcon"))
 const Social = ({ className, additionalItems = [] }: SocialProps = {}) => {
   const socialItems: SocialItem[] = [
     { 
+      type: 'lucide',
       icon: Shield, 
       tooltip: "Guard your privacy", 
       color: "text-emerald-600 hover:text-emerald-600",
-      ariaLabel: "保护隐私",
-      isLucide: true
+      ariaLabel: "保护隐私"
     },
     { 
+      type: 'lucide',
       icon: Send, 
       tooltip: "Telegram", 
       color: "text-gray-500 hover:text-[#229ED9]",
-      ariaLabel: "访问 Telegram 频道",
-      isLucide: true
+      ariaLabel: "访问 Telegram 频道"
     },
     { 
+      type: 'component',
       icon: XIcon, 
       tooltip: "X", 
       color: "text-gray-500 hover:text-[#333333]",
-      ariaLabel: "访问 X 主页",
-      isComponent: true
+      ariaLabel: "访问 X 主页"
     },
     { 
+      type: 'component',
       icon: YoutubeIcon, 
       tooltip: "YouTube", 
       color: "text-gray-500 hover:text-[#CC0000]",
-      ariaLabel: "访问 YouTube 频道",
-      isComponent: true
+      ariaLabel: "访问 YouTube 频道"
     },
     { 
+      type: 'component',
       icon: DiscordIcon, 
       tooltip: "Discord", 
       color: "text-gray-500 hover:text-[#5865F2]",
-      ariaLabel: "加入 Discord 社区",
-      isComponent: true
+      ariaLabel: "加入 Discord 社区"
     },
   ]
 
@@ -73,10 +73,10 @@ const Social = ({ className, additionalItems = [] }: SocialProps = {}) => {
                 className={`p-1.5 rounded-lg transition-all duration-300 ease-in-out ${item.color} focus:outline-none focus:ring-2 focus:ring-gray-300 hover:bg-gray-100`}
                 aria-label={item.ariaLabel}
               >
-                {item.isLucide ? (
+                {item.type === 'lucide' ? (
                   // Lucide 图标渲染
                   <item.icon className="w-5 h-5" />
-                ) : item.isComponent ? (
+                ) : item.type === 'component' ? (
                   // 自定义SVG组件渲染
                   <item.icon className="w-5 h-5" />
                 ) : (

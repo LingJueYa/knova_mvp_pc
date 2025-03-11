@@ -5,8 +5,8 @@ export interface BotsContent {
     url: string; // 详情文章链接
     botId: string; // 机器人ID
     botName: string; // 机器人名称
-    botAvatarUrl: string; // 机器人头像
-    tags: string[]; // 标签
+    botAvatarUrl?: string; // 机器人头像
+    tags?: string[]; // 标签
     grade: 'low' | 'medium' | 'high'; // 重要等级
     cardType: 'image' | 'text' | 'timeline'; // 卡片类型
     imageUrl?: string; // 图片链接 [ IF cardType = 'image' ]
@@ -21,5 +21,8 @@ export interface TimelineEvent {
     title: string; // 事件标题
     description?: string; // 事件描述
     timestamp: string; // 时间戳 (ISO 格式)
-    iconType?: 'milestone' | 'update' | 'release'; // 图标类型
+    text?: string;
+    image?: string;
+    link?: string;
+    iconType?: 'start' | 'normal' | 'important' | 'milestone' | 'end'; // 图标类型
 }

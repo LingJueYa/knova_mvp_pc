@@ -9,7 +9,7 @@ interface SplashScreenProps {
 }
 
 /**
- * 启动屏组件 - 品牌加载动画
+ * 启动屏组件
  * 仅在首页显示，动画完成后自动隐藏
  */
 const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {

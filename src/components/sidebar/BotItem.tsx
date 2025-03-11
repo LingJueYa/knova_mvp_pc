@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
  * 机器人项组件的属性接口
  */
 interface BotItemProps {
-  bot: SidebarBotItemType;        // 机器人数据，包含名称、头像、链接等信息
+  bot: SidebarBotItemType;
   isActive: boolean;              // 当前项是否处于激活状态
   playSound: (path: string) => void; // 播放音效的回调函数
 }
@@ -35,7 +35,7 @@ const BotItem: React.FC<BotItemProps> = ({ bot, isActive, playSound }) => {
 
   return (
     <li className={cn("mb-3.5 relative", isActive && "active-item")}>
-      {/* 当机器人项处于激活状态时显示的动画背景 */}
+      {/* 当机器人项处于激活状态时显示的动画 */}
       {isActive && (
         <motion.div 
           className="absolute inset-0 bg-white/95 dark:bg-gray-800/95 border-[0.5px] border-orange-100 dark:border-orange-500/20 shadow-[0_2px_12px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.15)] backdrop-blur-[2px] rounded-2xl z-0"
